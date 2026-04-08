@@ -1,0 +1,46 @@
+---
+export interface Props {
+  title: string;
+  date: Date;
+  display_date: string;
+  recurring: boolean;
+  recurring_label?: string;
+}
+const { title, date, display_date, recurring, recurring_label } = Astro.props;
+const isPast = !recurring && date < new Date();
+---
+{!isPast && (
+  <article class="event-row">
+    <div class="event-dot" aria-hidden="true"></div>
+    <div class="event-info">
+      <h3>{title}</h3>
+      <slot />
+    </div>
+    <div class="event-badge">{recurring ? recurring_label ?? display_date : display_date}</div>
+  </article>
+)}
+
+<style>
+  .event-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #fff;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+  }
+  .event-dot { width: 10px; height: 10px; background: var(--leaf); border-radius: 50%; flex-shrink: 0; }
+  .event-info { flex: 1; }
+  .event-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; color: var(--text); }
+  .event-info :global(p) { font-size: 13px; color: var(--muted); }
+  .event-badge {
+    background: var(--forest);
+    color: var(--sprout);
+    font-size: 11px;
+    padding: 5px 11px;
+    border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+</style>

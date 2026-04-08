@@ -1,43 +1,44 @@
-# Astro Starter Kit: Minimal
+# Health Means Wealth — Website
 
-```sh
-npm create astro@latest -- --template minimal
-```
+## Adding a new update post
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+1. Open the folder src/content/updates/
+2. Copy any existing .md file and rename it (e.g. summer-bbq-recap-2025.md)
+3. Edit the top section between the --- lines:
+   - title: the headline
+   - date: today's date in format 2025-08-10
+   - tag: one of: Event recap, News, Growing season, Community
+4. Write the update text below the second ---
+5. Save the file and run: git add . then git commit -m "New update" then git push
 
-## 🚀 Project Structure
+## Adding an upcoming event
 
-Inside of your Astro project, you'll see the following folders and files:
+1. Open src/content/events/
+2. Copy an existing .md file and rename it
+3. Fill in title, date (2025-09-20), display_date (what visitors see, e.g. Sat 20 Sep 2025), and set recurring to false unless it repeats weekly
+4. Write a short description below the ---
+5. Save and push as above
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## Adding photos
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Drag photos into public/images/gallery/
+The gallery will show them automatically on the next push.
+Use .jpg or .webp format. Keep files under 1MB each.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Publishing any change
 
-Any static assets, like images, can be placed in the `public/` directory.
+Open a terminal in the project folder and run these three commands:
 
-## 🧞 Commands
+git add .
+git commit -m "Update"
+git push
 
-All commands are run from the root of the project, from a terminal:
+The site will be live within about 60 seconds.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Local preview
 
-## 👀 Want to learn more?
+To see the site on your computer before publishing:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+npm run dev
+
+Then open http://localhost:4321 in a browser.

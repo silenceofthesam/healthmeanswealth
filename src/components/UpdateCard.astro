@@ -1,0 +1,56 @@
+---
+export interface Props {
+  title: string;
+  date: Date;
+  tag: string;
+  slug: string;
+}
+const { title, date, tag, slug } = Astro.props;
+const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
+const month = date.toLocaleDateString('en-GB', { month: 'short' });
+const tagClass = {
+  'Event recap':    'tag-event',
+  'News':           'tag-news',
+  'Growing season': 'tag-grow',
+  'Community':      'tag-community',
+};
+---
+<article class="update-card">
+  <div class="update-date" aria-label={date.toLocaleDateString('en-GB')}>
+    <strong>{day}</strong>
+    <small>{month}</small>
+  </div>
+  <div class="update-body">
+    <span class={`tag ${tagClass[tag] ?? 'tag-news'}`}>{tag}</span>
+    <h3>{title}</h3>
+    <slot />
+  </div>
+</article>
+
+<style>
+  .update-card {
+    display: flex;
+    gap: 1.25rem;
+    background: #fff;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .update-date { min-width: 44px; text-align: center; flex-shrink: 0; }
+  .update-date strong { display: block; font-size: 24px; font-weight: 700; color: var(--forest); line-height: 1; }
+  .update-date small { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .update-body h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 4px 0 6px; }
+  .update-body :global(p) { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 5px;
+    margin-bottom: 4px;
+  }
+  .tag-event    { background: #EAF3DE; color: #3B6D11; }
+  .tag-news     { background: #FAEEDA; color: #854F0B; }
+  .tag-grow     { background: #E1F5EE; color: #0F6E56; }
+  .tag-community{ background: #E6F1FB; color: #185FA5; }
+</style>

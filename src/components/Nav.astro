@@ -1,0 +1,103 @@
+---
+---
+<header class="nav-wrap">
+  <nav class="nav">
+    <a href="/#home" class="nav-logo" aria-label="Health Means Wealth home">
+      <img src="/logos/hmw-logo-horizontal-white.svg" alt="Health Means Wealth" height="38" width="auto" />
+    </a>
+    <button class="nav-burger" aria-label="Open menu" aria-expanded="false" id="burger">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="/#about">About</a></li>
+      <li><a href="/#gallery">Gallery</a></li>
+      <li><a href="/#events">Events</a></li>
+      <li><a href="/#updates">Updates</a></li>
+      <li><a href="/#find-us">Find Us</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .nav-wrap {
+    background: var(--forest);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.15);
+  }
+  .nav {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-logo img { height: 38px; width: auto; }
+  .nav-links {
+    display: flex;
+    list-style: none;
+    gap: 0;
+  }
+  .nav-links a {
+    color: var(--sprout);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 0 14px;
+    line-height: 64px;
+    display: block;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+  .nav-burger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+  }
+  @media (max-width: 680px) {
+    .nav-burger { display: flex; }
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: var(--forest);
+      padding: 0.5rem 0 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { line-height: 1; padding: 14px 1.5rem; font-size: 16px; }
+  }
+</style>
+
+<script>
+  const burger = document.getElementById('burger');
+  const links = document.getElementById('nav-links');
+  burger?.addEventListener('click', () => {
+    const open = links?.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  links?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      links.classList.remove('open');
+      burger?.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>

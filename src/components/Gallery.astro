@@ -1,0 +1,54 @@
+---
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
+
+let images = [];
+try {
+  const files = await readdir(join(process.cwd(), 'public/images/gallery'));
+  images = files
+    .filter(f => /\.(jpe?g|png|webp|avif)$/i.test(f))
+    .map(f => `/images/gallery/${f}`);
+} catch {
+  images = [];
+}
+
+const placeholders = [
+  { label: 'Summer BBQ', colour: '#2D5016' },
+  { label: 'Planting day', colour: '#3D6B20' },
+  { label: 'Harvest time', colour: '#4E8028' },
+  { label: 'Coronation celebration', colour: '#5A7A3A' },
+  { label: 'Coffee morning', colour: '#7AB648' },
+  { label: 'Volunteer day', colour: '#A8D070' },
+];
+const showPlaceholders = images.length === 0;
+---
+
+<div class="gallery-grid">
+  {showPlaceholders
+    ? placeholders.map((p, i) => (
+        <div
+          class={`gallery-item${i === 0 ? ' large' : ''}`}
+          style={`background:${p.colour};`}
+          aria-label={`Placeholder: ${p.label}`}>
+          <span class="gallery-label">{p.label}</span>
+        </div>
+      ))
+    : images.map((src, i) => (
+        <div class={`gallery-item${i === 0 ? ' large' : ''}`}>
+          <img src={src} alt={`Health Means Wealth — photo ${i + 1}`} loading="lazy" />
+        </div>
+      ))
+  }
+</div>
+
+<style>
+  .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .gallery-item { border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 3; position: relative; }
+  .gallery-item.large { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; min-height: 280px; }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+  .gallery-label { position: absolute; bottom: 10px; left: 12px; color: rgba(255,255,255,0.85); font-size: 12px; font-weight: 600; }
+  @media (max-width: 600px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .gallery-item.large { grid-column: span 1; grid-row: span 1; min-height: auto; }
+  }
+</style>
