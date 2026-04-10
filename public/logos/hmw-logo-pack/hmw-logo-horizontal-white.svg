@@ -1,0 +1,8 @@
+<svg width="520" height="112" viewBox="0 0 520 112" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="4" width="96" height="96" rx="18" fill="none" stroke="#ffffff" stroke-width="3"/>
+  <line x1="52" y1="90" x2="52" y2="24" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M52 64 C48 64 24 60 20 38 C20 38 40 28 52 50Z" fill="#ffffff"/>
+  <path d="M52 50 C56 50 80 44 84 22 C84 22 64 12 52 34Z" fill="#ffffff"/>
+  <text x="122" y="52" font-family="'Trebuchet MS', Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff" letter-spacing="-0.5">Health Means Wealth</text>
+  <text x="124" y="82" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="rgba(255,255,255,0.72)" letter-spacing="4.5">HERON WAY ALLOTMENTS · FELTHAM</text>
+</svg>
