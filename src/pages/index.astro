@@ -139,15 +139,7 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     </div>
   </section>
 
-  <div class="donate-wrap">
-    <div class="donate-inner">
-      <h2 style="color:#fff;">Support Health Means Wealth</h2>
-      <p>We are a volunteer-run community group on the path to registered charity status. Your support helps us keep the allotment growing, accessible, and free for everyone in the community.</p>
-      <a href="https://www.paypal.com/gb/fundraiser" target="_blank" rel="noopener" class="donate-btn">Donate via PayPal Giving Fund</a>
-    </div>
-  </div>
-
-<section id="find-us">
+  <section id="find-us">
     <p class="section-label">Find us</p>
     <h2>Come and visit</h2>
     <div class="find-us-grid">
@@ -206,6 +198,7 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
       <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
     </div>
   </div>
+
   <Footer />
 </Base>
 
@@ -247,12 +240,6 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
   .testimonial { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.4rem; }
   .testimonial blockquote { font-size: 14px; line-height: 1.7; color: var(--text); font-style: italic; margin-bottom: 12px; }
   .testimonial cite { font-size: 12px; color: var(--muted); font-style: normal; font-weight: 600; }
-  .donate-wrap { background: var(--leaf); padding: 3.5rem 1.5rem; text-align: center; }
-  .donate-inner { max-width: 600px; margin: 0 auto; }
-  .donate-inner h2 { color: #fff; margin-bottom: 0.75rem; }
-  .donate-inner p { color: rgba(255,255,255,0.85); font-size: 16px; margin-bottom: 1.75rem; }
-  .donate-btn { display: inline-block; background: #fff; color: var(--forest); text-decoration: none; padding: 14px 30px; border-radius: 7px; font-size: 15px; font-weight: 700; transition: opacity 0.15s; }
-  .donate-btn:hover { opacity: 0.9; }
   .find-us-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
   .map-address { font-size: 13px; color: var(--muted); margin-top: 10px; }
   .contact-details { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -261,7 +248,6 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
   .contact-row h3 { font-size: 13px; font-weight: 700; color: var(--forest); margin-bottom: 2px; }
   .contact-row p, .contact-row a { font-size: 13px; color: var(--muted); text-decoration: none; }
   .contact-row a:hover { text-decoration: underline; }
-  .tally-placeholder { background: #fff; border: 1px dashed var(--border); border-radius: var(--radius); padding: 2rem; max-width: 600px; color: var(--muted); font-size: 14px; line-height: 1.6; }
   @media (max-width: 680px) {
     .find-us-grid { grid-template-columns: 1fr; }
     .hero-stats { gap: 1.5rem; }
