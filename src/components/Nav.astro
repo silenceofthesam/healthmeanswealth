@@ -3,7 +3,7 @@
 <header class="nav-wrap">
   <nav class="nav">
     <a href="/#home" class="nav-logo" aria-label="Health Means Wealth home">
-      <img src="/logos/hmw-logo-horizontal-white.svg" alt="Health Means Wealth" height="38" width="auto" />
+      <img src="/logos/hmw-logo-horizontal-white.svg" alt="Health Means Wealth" height="38" decoding="async" />
     </a>
     <button class="nav-burger" aria-label="Open menu" aria-expanded="false" id="burger">
       <span></span><span></span><span></span>
@@ -21,40 +21,27 @@
 
 <style>
   .nav-wrap {
-    background: var(--forest);
+    background: var(--color-green-dark);
     position: sticky;
     top: 0;
     z-index: 100;
     box-shadow: 0 1px 0 rgba(0,0,0,0.15);
   }
   .nav {
-    max-width: 960px;
+    max-width: var(--max-width);
     margin: 0 auto;
-    padding: 0 1.5rem;
-    height: 64px;
+    padding: 0 var(--space-3);
+    height: var(--nav-height);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: var(--space-2);
   }
   .nav-logo img { height: 38px; width: auto; }
-  .nav-links {
-    display: flex;
-    list-style: none;
-    gap: 0;
-  }
-  .nav-links a {
-    color: var(--sprout);
-    text-decoration: none;
-    font-size: 14px;
-    padding: 0 14px;
-    line-height: 64px;
-    display: block;
-    transition: color 0.15s;
-  }
-  .nav-links a:hover { color: #fff; }
+
+  /* Mobile base — burger visible, links hidden as dropdown */
   .nav-burger {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 5px;
     background: none;
@@ -66,24 +53,49 @@
     display: block;
     width: 22px;
     height: 2px;
-    background: #fff;
+    background: var(--color-bg-alt);
     border-radius: 2px;
   }
-  @media (max-width: 680px) {
-    .nav-burger { display: flex; }
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    list-style: none;
+    position: absolute;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    background: var(--color-green-dark);
+    padding: var(--space-1) 0 var(--space-2);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    gap: 0;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a {
+    color: var(--color-green-light);
+    text-decoration: none;
+    font-size: var(--size-base);
+    padding: 14px var(--space-3);
+    line-height: 1;
+    display: block;
+    /* transition defined in global.css */
+  }
+
+  /* Tablet and up — inline nav, no burger */
+  @media (min-width: 640px) {
+    .nav-burger { display: none; }
     .nav-links {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      top: 64px;
-      left: 0;
-      right: 0;
-      background: var(--forest);
-      padding: 0.5rem 0 1rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: row;
+      position: static;
+      background: none;
+      padding: 0;
+      border-top: none;
     }
-    .nav-links.open { display: flex; }
-    .nav-links a { line-height: 1; padding: 14px 1.5rem; font-size: 16px; }
+    .nav-links a {
+      font-size: var(--size-sm);
+      padding: 0 14px;
+      line-height: var(--nav-height);
+    }
   }
 </style>
 

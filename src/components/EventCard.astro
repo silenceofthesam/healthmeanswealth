@@ -10,7 +10,7 @@ const { title, date, display_date, recurring, recurring_label } = Astro.props;
 const isPast = !recurring && date < new Date();
 ---
 {!isPast && (
-  <article class="event-row">
+  <article class="event-card">
     <div class="event-dot" aria-hidden="true"></div>
     <div class="event-info">
       <h3>{title}</h3>
@@ -21,25 +21,41 @@ const isPast = !recurring && date < new Date();
 )}
 
 <style>
-  .event-row {
+  .event-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    background: #fff;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.25rem;
+    gap: var(--space-2);
+    background: var(--color-bg-alt);
+    border: 0.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) 1.25rem;
+    /* transition defined in global.css */
   }
-  .event-dot { width: 10px; height: 10px; background: var(--leaf); border-radius: 50%; flex-shrink: 0; }
+  .event-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--color-green-mid);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
   .event-info { flex: 1; }
-  .event-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; color: var(--text); }
-  .event-info :global(p) { font-size: 13px; color: var(--muted); }
+  .event-info h3 {
+    font-size: var(--size-base);
+    font-weight: var(--weight-medium);
+    margin-bottom: 2px;
+    color: var(--color-text);
+  }
+  .event-info :global(p) {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    max-width: none;
+  }
   .event-badge {
-    background: var(--forest);
-    color: var(--sprout);
-    font-size: 11px;
+    background: var(--color-green-dark);
+    color: var(--color-green-light);
+    font-size: var(--size-xs);
     padding: 5px 11px;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     white-space: nowrap;
     flex-shrink: 0;
   }

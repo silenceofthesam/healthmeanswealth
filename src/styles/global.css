@@ -1,0 +1,311 @@
+/* =====================================================
+   Health Means Wealth — global.css
+   ===================================================== */
+
+/* TASK 1 — Design Tokens ----------------------------- */
+:root {
+  /* Colours */
+  --color-green-dark: #1E3610;
+  --color-green-mid: #7AB648;
+  --color-green-light: #A8D070;
+  --color-green-pale: #EEF6E4;
+  --color-bg: #F9F7F3;
+  --color-bg-alt: #FFFFFF;
+  --color-text: #2C2C2C;
+  --color-text-muted: #6B6B6B;
+  --color-border: #E0DAD0;
+
+  /* Typography */
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-heading: 'DM Sans', system-ui, sans-serif;
+  --size-xs: 0.75rem;
+  --size-sm: 0.875rem;
+  --size-base: 1rem;
+  --size-lg: 1.125rem;
+  --size-xl: 1.375rem;
+  --size-2xl: 1.75rem;
+  --size-3xl: 2.25rem;
+  --size-4xl: 3rem;
+  --leading-tight: 1.2;
+  --leading-body: 1.65;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  /* Spacing (base unit: 0.5rem / 8px) */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-6: 3rem;
+  --space-8: 4rem;
+  --space-12: 6rem;
+  --space-section: 5rem;
+
+  /* Layout */
+  --max-width: 1100px;
+  --max-width-prose: 680px;
+  --nav-height: 72px;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+
+  /* Transitions */
+  --transition-fast: 160ms ease;
+  --transition-base: 220ms ease;
+
+  /* Breakpoints (reference only — use in media queries as literal values) */
+  /* --bp-md: 640px */
+  /* --bp-lg: 1024px */
+
+  /*
+   * Semantic accent tokens — colours needed by components that are not part of
+   * the core green palette but must not appear as hardcoded hex values in
+   * component files (governing principle 2).
+   */
+  --color-accent-orange-pale: #FAEEDA;
+  --color-accent-teal-pale: #E1F5EE;
+  --color-accent-blue-pale: #E6F1FB;
+
+  /* Tag colours (UpdateCard) */
+  --color-tag-event-bg: #EAF3DE;
+  --color-tag-event-text: #3B6D11;
+  --color-tag-news-bg: #FAEEDA;
+  --color-tag-news-text: #854F0B;
+  --color-tag-grow-bg: #E1F5EE;
+  --color-tag-grow-text: #0F6E56;
+  --color-tag-community-bg: #E6F1FB;
+  --color-tag-community-text: #185FA5;
+
+  /* Gallery placeholder gradient shades (decorative only, shown when no images) */
+  --color-placeholder-2: #3D6B20;
+  --color-placeholder-3: #4E8028;
+  --color-placeholder-4: #5A7A3A;
+}
+
+/* TASK 2 — Base reset and typography ---------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* TASK 4 — Smooth scroll + nav-height offset */
+html {
+  font-size: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-height);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--size-base);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-green-dark);
+}
+
+h1 { font-size: var(--size-4xl); }
+h2 { font-size: var(--size-3xl); margin-bottom: var(--space-2); }
+h3 { font-size: var(--size-xl); }
+h4 { font-size: var(--size-lg); }
+
+p {
+  font-size: var(--size-base);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  max-width: var(--max-width-prose);
+}
+
+small, .text-sm {
+  font-size: var(--size-sm);
+}
+
+strong {
+  font-weight: var(--weight-bold);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  transition: color var(--transition-fast);
+}
+
+/* TASK 3 — Layout utilities ------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+.section {
+  padding-block: var(--space-section);
+}
+
+.section + .section {
+  padding-top: 0;
+}
+
+.prose {
+  max-width: var(--max-width-prose);
+}
+
+/* Existing layout selectors migrated from Base.astro inline <style> */
+section {
+  padding: var(--space-8) var(--space-3);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.alt-bg {
+  /* body is --color-bg (off-white); alt sections are --color-bg-alt (white) */
+  background: var(--color-bg-alt);
+}
+
+.alt-wrap {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-3);
+}
+
+.section-label {
+  font-size: var(--size-xs);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-green-mid);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-1);
+}
+
+.section-intro {
+  color: var(--color-text-muted);
+  font-size: var(--size-base);
+  max-width: 580px;
+  margin-bottom: var(--space-4);
+  line-height: var(--leading-body);
+}
+
+/* Prose pages: accessibility.astro, privacy.astro */
+.prose-page {
+  max-width: var(--max-width-prose);
+  margin: 0 auto;
+  /* override the global section padding (space-8 top → space-6) */
+  padding: var(--space-6) var(--space-3);
+}
+
+.prose-page h1 {
+  margin-bottom: var(--space-3);
+}
+
+.prose-page h2 {
+  /* override global h2 (size-3xl) — prose pages use smaller sub-headings */
+  font-size: var(--size-lg);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.prose-page a {
+  color: var(--color-green-dark);
+}
+
+/* TASK 5 — Image handling --------------------------- */
+.img-wrap {
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-base);
+}
+
+.img-wrap:hover img {
+  transform: scale(1.03);
+}
+
+/* TASK 6 — Interactive states ----------------------- */
+
+/* Buttons — base transition lives here so it applies in both directions */
+.btn-primary {
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.btn-primary:hover {
+  background: var(--color-green-dark);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+.btn-secondary:hover {
+  background: var(--color-green-dark);
+  color: var(--color-bg-alt);
+  border-color: var(--color-green-dark);
+}
+
+/* Nav links */
+.nav-links a {
+  transition: color var(--transition-fast), opacity var(--transition-fast);
+}
+.nav-links a:hover {
+  color: var(--color-green-mid);
+  opacity: 1;
+}
+
+/* Cards */
+.pillar,
+.event-card,
+.gallery-item {
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+.pillar:hover,
+.event-card:hover,
+.gallery-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Focus — keyboard users */
+:focus-visible {
+  outline: 2px solid var(--color-green-mid);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* TASK 7 — Touch targets on mobile ------------------ */
+@media (max-width: 639px) {
+  button, a.btn-primary, a.btn-secondary, .nav-links a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}

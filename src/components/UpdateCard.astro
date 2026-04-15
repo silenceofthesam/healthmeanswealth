@@ -31,26 +31,51 @@ const tagClass = {
   .update-card {
     display: flex;
     gap: 1.25rem;
-    background: #fff;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
+    background: var(--color-bg-alt);
+    border: 0.5px solid var(--color-border);
+    border-radius: var(--radius-md);
     padding: 1.25rem;
   }
   .update-date { min-width: 44px; text-align: center; flex-shrink: 0; }
-  .update-date strong { display: block; font-size: 24px; font-weight: 700; color: var(--forest); line-height: 1; }
-  .update-date small { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .update-body h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 4px 0 6px; }
-  .update-body :global(p) { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .update-date strong {
+    display: block;
+    /*
+     * 24px has no exact token (--size-xl is ~22px, --size-2xl is ~28px).
+     * Using --size-2xl (1.75rem) as the closest larger option for the date numeral.
+     */
+    font-size: var(--size-2xl);
+    font-weight: var(--weight-bold);
+    color: var(--color-green-dark);
+    line-height: 1;
+  }
+  .update-date small {
+    font-size: var(--size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .update-body h3 {
+    font-size: var(--size-base);
+    font-weight: var(--weight-medium);
+    color: var(--color-text);
+    margin: 4px 0 6px;
+  }
+  .update-body :global(p) {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    max-width: none;
+  }
   .tag {
     display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: var(--size-xs);
+    font-weight: var(--weight-bold);
     padding: 3px 9px;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     margin-bottom: 4px;
   }
-  .tag-event    { background: #EAF3DE; color: #3B6D11; }
-  .tag-news     { background: #FAEEDA; color: #854F0B; }
-  .tag-grow     { background: #E1F5EE; color: #0F6E56; }
-  .tag-community{ background: #E6F1FB; color: #185FA5; }
+  .tag-event    { background: var(--color-tag-event-bg);     color: var(--color-tag-event-text); }
+  .tag-news     { background: var(--color-tag-news-bg);      color: var(--color-tag-news-text); }
+  .tag-grow     { background: var(--color-tag-grow-bg);      color: var(--color-tag-grow-text); }
+  .tag-community{ background: var(--color-tag-community-bg); color: var(--color-tag-community-text); }
 </style>

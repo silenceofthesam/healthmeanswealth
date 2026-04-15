@@ -43,22 +43,22 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     <p class="section-intro">Founded with the belief that access to good food and good company is a right, not a privilege, Health Means Wealth brings together residents of all ages, backgrounds, and abilities. Our fully wheelchair-accessible allotment at Heron Way is a living example of what urban communities can achieve when they grow together.</p>
     <div class="pillars">
       <div class="pillar">
-        <div class="pillar-icon" style="background:#EAF3DE;" aria-hidden="true">🥕</div>
+        <div class="pillar-icon pillar-icon--green" aria-hidden="true">🥕</div>
         <h3>Growing fruit and veg</h3>
         <p>Hands-on growing sessions for all skill levels. Learn to plant, tend, and harvest fresh produce from the ground up.</p>
       </div>
       <div class="pillar">
-        <div class="pillar-icon" style="background:#FAEEDA;" aria-hidden="true">🎉</div>
+        <div class="pillar-icon pillar-icon--orange" aria-hidden="true">🎉</div>
         <h3>Community celebrations</h3>
         <p>From the King's Coronation to summer BBQs, we mark the seasons together with food, friendship, and festivities.</p>
       </div>
       <div class="pillar">
-        <div class="pillar-icon" style="background:#E1F5EE;" aria-hidden="true">♿</div>
+        <div class="pillar-icon pillar-icon--teal" aria-hidden="true">♿</div>
         <h3>Fully inclusive</h3>
         <p>Wheelchair accessible throughout. Our volunteers include borough members with autism and Asperger's — everyone has a valued role here.</p>
       </div>
       <div class="pillar">
-        <div class="pillar-icon" style="background:#E6F1FB;" aria-hidden="true">🌍</div>
+        <div class="pillar-icon pillar-icon--blue" aria-hidden="true">🌍</div>
         <h3>Health and wellbeing</h3>
         <p>Fresh air, gentle physical activity, and genuine community connection — all proven to benefit mental and physical health.</p>
       </div>
@@ -147,9 +147,8 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
         <iframe
           title="Heron Way Community Allotments on Google Maps"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2485.6861359712007!2d-0.41486412393185496!3d51.4639188138796!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487673052f7d4c87%3A0xbb816b7b663b5018!2sHeron%20Way%20Community%20Allotments!5e0!3m2!1sen!2suk!4v1775939707992!5m2!1sen!2suk"
-          width="100%"
           height="280"
-          style="border:0; border-radius: var(--radius);"
+          class="map-iframe"
           allowfullscreen=""
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade">
@@ -203,57 +202,211 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
 </Base>
 
 <style>
-  .hero-wrap { background: var(--forest); }
-  .hero { max-width: 960px; margin: 0 auto; padding: 4.5rem 1.5rem 3.5rem; text-align: center; }
+  /* ---- Hero ---- */
+  .hero-wrap { background: var(--color-green-dark); }
+  .hero {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 4.5rem var(--space-3) 3.5rem;
+    text-align: center;
+  }
   .hero-badge {
     display: inline-block;
     background: rgba(168,208,112,0.15);
     border: 1px solid rgba(168,208,112,0.35);
-    color: var(--sprout);
-    font-size: 11px;
+    color: var(--color-green-light);
+    font-size: var(--size-xs);
     letter-spacing: 1.5px;
     text-transform: uppercase;
     padding: 5px 16px;
-    border-radius: 20px;
-    margin-bottom: 1.5rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-3);
   }
-  .hero h1 { color: #fff; font-size: clamp(28px, 5vw, 46px); font-weight: 800; line-height: 1.2; margin-bottom: 1.25rem; }
-  .hero h1 em { color: var(--sprout); font-style: normal; }
-  .hero-sub { color: rgba(255,255,255,0.8); font-size: 17px; max-width: 580px; margin: 0 auto 2rem; line-height: 1.75; }
-  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn-primary { background: var(--leaf); color: #fff; text-decoration: none; padding: 13px 26px; border-radius: 7px; font-size: 15px; font-weight: 600; transition: background 0.15s; }
-  .btn-primary:hover { background: #6aa03c; }
-  .btn-secondary { background: transparent; color: var(--sprout); text-decoration: none; border: 1px solid rgba(168,208,112,0.45); padding: 13px 26px; border-radius: 7px; font-size: 15px; transition: border-color 0.15s; }
-  .btn-secondary:hover { border-color: var(--sprout); }
-  .hero-stats { display: flex; justify-content: center; gap: 2.5rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+  /* Mobile base — heading starts at size-2xl; scaled up in breakpoints below */
+  .hero h1 {
+    color: var(--color-bg-alt);
+    font-size: var(--size-2xl);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-3);
+  }
+  .hero h1 em { color: var(--color-green-light); font-style: normal; }
+  .hero-sub {
+    color: rgba(255,255,255,0.8);
+    font-size: var(--size-lg);
+    max-width: 580px;
+    margin: 0 auto var(--space-4);
+    line-height: var(--leading-body);
+  }
+  .hero-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Button base styles — hover/transition defined in global.css */
+  .btn-primary {
+    background: var(--color-green-mid);
+    color: var(--color-bg-alt);
+    text-decoration: none;
+    padding: 13px 26px;
+    border-radius: var(--radius-sm);
+    font-size: var(--size-sm);
+    font-weight: var(--weight-bold);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--color-green-light);
+    text-decoration: none;
+    border: 1px solid rgba(168,208,112,0.45);
+    padding: 13px 26px;
+    border-radius: var(--radius-sm);
+    font-size: var(--size-sm);
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+  }
   .hero-stat { text-align: center; }
-  .stat-icon { display: block; font-size: 22px; margin-bottom: 6px; }
-  .hero-stat small { color: rgba(255,255,255,0.6); font-size: 12px; }
-  .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-  .pillar { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.4rem; }
-  .pillar-icon { width: 42px; height: 42px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 14px; }
-  .pillar h3 { font-size: 15px; font-weight: 700; color: var(--forest); margin-bottom: 6px; }
-  .pillar p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-  .events-list { display: flex; flex-direction: column; gap: 12px; }
+  .stat-icon { display: block; font-size: var(--size-xl); margin-bottom: 6px; }
+  .hero-stat small { color: rgba(255,255,255,0.6); font-size: var(--size-xs); }
+
+  /* ---- Pillars — mobile first (1 → 2 → 3 columns) ---- */
+  .pillars {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  .pillar {
+    background: var(--color-bg-alt);
+    border: 0.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.4rem;
+    /* transition defined in global.css */
+  }
+  .pillar-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--size-lg);
+    margin-bottom: 14px;
+  }
+  .pillar-icon--green  { background: var(--color-green-pale); }
+  .pillar-icon--orange { background: var(--color-accent-orange-pale); }
+  .pillar-icon--teal   { background: var(--color-accent-teal-pale); }
+  .pillar-icon--blue   { background: var(--color-accent-blue-pale); }
+  .pillar h3 {
+    font-size: var(--size-base);
+    font-weight: var(--weight-bold);
+    color: var(--color-green-dark);
+    margin-bottom: 6px;
+  }
+  .pillar p {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    line-height: var(--leading-body);
+    max-width: none;
+  }
+
+  /* ---- Event / Update lists ---- */
+  .events-list  { display: flex; flex-direction: column; gap: 12px; }
   .updates-list { display: flex; flex-direction: column; gap: 14px; }
-  .testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-  .testimonial { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.4rem; }
-  .testimonial blockquote { font-size: 14px; line-height: 1.7; color: var(--text); font-style: italic; margin-bottom: 12px; }
-  .testimonial cite { font-size: 12px; color: var(--muted); font-style: normal; font-weight: 600; }
-  .find-us-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
-  .map-address { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+  /* ---- Testimonials — mobile first (1 → 2 → 3 columns) ---- */
+  .testimonials {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  .testimonial {
+    background: var(--color-bg-alt);
+    border: 0.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.4rem;
+  }
+  .testimonial blockquote {
+    font-size: var(--size-sm);
+    line-height: var(--leading-body);
+    color: var(--color-text);
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+  .testimonial cite {
+    font-size: var(--size-xs);
+    color: var(--color-text-muted);
+    font-style: normal;
+    font-weight: var(--weight-bold);
+  }
+
+  /* ---- Find us — mobile first (1 → 2 columns) ---- */
+  .find-us-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  /* iframe inline style replaced with class */
+  .map-iframe {
+    border: 0;
+    border-radius: var(--radius-md);
+    display: block;
+    width: 100%;
+  }
+  .map-address {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    margin-top: 10px;
+  }
   .contact-details { display: flex; flex-direction: column; gap: 1.25rem; }
   .contact-row { display: flex; gap: 14px; align-items: flex-start; }
-  .contact-icon { width: 34px; height: 34px; background: #EAF3DE; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
-  .contact-row h3 { font-size: 13px; font-weight: 700; color: var(--forest); margin-bottom: 2px; }
-  .contact-row p, .contact-row a { font-size: 13px; color: var(--muted); text-decoration: none; }
-  .contact-row a:hover { text-decoration: underline; }
-  @media (max-width: 680px) {
-    .find-us-grid { grid-template-columns: 1fr; }
-    .hero-stats { gap: 1.5rem; }
-    .pillars { grid-template-columns: 1fr 1fr; }
+  .contact-icon {
+    width: 34px;
+    height: 34px;
+    background: var(--color-green-pale);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--size-base);
+    flex-shrink: 0;
   }
-  @media (max-width: 420px) {
-    .pillars { grid-template-columns: 1fr; }
+  .contact-row h3 {
+    font-size: var(--size-sm);
+    font-weight: var(--weight-bold);
+    color: var(--color-green-dark);
+    margin-bottom: 2px;
+  }
+  .contact-row p,
+  .contact-row a {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    max-width: none;
+  }
+  .contact-row a:hover { text-decoration: underline; }
+
+  /* ---- Responsive breakpoints (min-width, mobile first) ---- */
+  @media (min-width: 640px) {
+    .hero h1 { font-size: var(--size-3xl); }
+    .hero-stats { gap: 2.5rem; }
+    .pillars { grid-template-columns: repeat(2, 1fr); }
+    .testimonials { grid-template-columns: repeat(2, 1fr); }
+    .find-us-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (min-width: 1024px) {
+    .hero h1 { font-size: var(--size-4xl); }
+    .pillars { grid-template-columns: repeat(3, 1fr); }
+    .testimonials { grid-template-columns: repeat(3, 1fr); }
   }
 </style>
