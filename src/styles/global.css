@@ -87,6 +87,9 @@
   --color-placeholder-2: #3D6B20;
   --color-placeholder-3: #4E8028;
   --color-placeholder-4: #5A7A3A;
+
+  /* Hero gradient mid-stop — between green-dark and green-mid */
+  --color-green-deep: #2a5218;
 }
 
 /* TASK 2 — Base reset and typography ---------------- */
@@ -165,6 +168,10 @@ a {
   padding-top: 0;
 }
 
+.section--alt {
+  background: var(--color-bg-alt);
+}
+
 .prose {
   max-width: var(--max-width-prose);
 }
@@ -188,12 +195,13 @@ section {
 }
 
 .section-label {
+  display: inline-block;
   font-size: var(--size-xs);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--color-green-mid);
   font-weight: var(--weight-bold);
-  margin-bottom: var(--space-1);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-green-mid);
+  margin-bottom: var(--space-2);
 }
 
 .section-intro {
@@ -308,4 +316,18 @@ section {
     display: inline-flex;
     align-items: center;
   }
+}
+
+/* Events empty state -------------------------------- */
+.events-empty {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+}
+
+.events-empty a {
+  color: var(--color-green-mid);
+  font-weight: var(--weight-medium);
 }

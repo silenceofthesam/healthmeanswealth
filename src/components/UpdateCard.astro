@@ -16,7 +16,7 @@ const tagClass = {
 };
 ---
 <article class="update-card">
-  <div class="update-date" aria-label={date.toLocaleDateString('en-GB')}>
+  <div class="update-date" aria-label={date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}>
     <strong>{day}</strong>
     <small>{month}</small>
   </div>
@@ -33,8 +33,10 @@ const tagClass = {
     gap: 1.25rem;
     background: var(--color-bg-alt);
     border: 0.5px solid var(--color-border);
+    border-left: 3px solid var(--color-green-mid);
     border-radius: var(--radius-md);
     padding: 1.25rem;
+    padding-left: var(--space-3);
   }
   .update-date { min-width: 44px; text-align: center; flex-shrink: 0; }
   .update-date strong {

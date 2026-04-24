@@ -1,0 +1,178 @@
+---
+import { getCollection, render } from 'astro:content';
+const allTestimonials = await getCollection('testimonials');
+const items = allTestimonials.sort((a, b) => a.data.order - b.data.order);
+---
+
+<div class="testimonials-section" id="testimonials">
+  <div class="container">
+    <p class="section-label">What people say</p>
+    <h2>Voices from our community</h2>
+
+    <div class="carousel-track" id="testimonialTrack">
+      {items.map(async (item) => {
+        const { Content } = await render(item);
+        return (
+          <div class="testimonial-card">
+            <blockquote>
+              <Content />
+            </blockquote>
+            <footer class="testimonial-attribution">
+              <strong class="testimonial-name">{item.data.name}</strong>
+              <span class="testimonial-role">
+                {item.data.role}{item.data.organisation ? `, ${item.data.organisation}` : ''}
+              </span>
+            </footer>
+          </div>
+        );
+      })}
+    </div>
+
+    <div class="carousel-dots" id="carouselDots" aria-hidden="true"></div>
+  </div>
+</div>
+
+<style>
+  .testimonials-section {
+    padding-block: var(--space-section);
+  }
+
+  .testimonials-section h2 {
+    margin-bottom: var(--space-6);
+  }
+
+  .carousel-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    gap: var(--space-4);
+    padding-bottom: var(--space-3);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .testimonial-card {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6) var(--space-4);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 640px) {
+    .testimonial-card {
+      flex: 0 0 calc(50% - var(--space-2));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .testimonial-card {
+      flex: 0 0 calc(33.333% - var(--space-3));
+    }
+  }
+
+  blockquote {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: var(--size-lg);
+    line-height: var(--leading-body);
+    color: var(--color-text);
+    font-style: italic;
+  }
+
+  blockquote::before {
+    content: '\201C';
+    font-size: var(--size-4xl);
+    line-height: 0.6;
+    color: var(--color-green-light);
+    display: block;
+    margin-bottom: var(--space-2);
+    font-style: normal;
+  }
+
+  .testimonial-attribution {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .testimonial-name {
+    font-size: var(--size-sm);
+    font-weight: var(--weight-bold);
+    color: var(--color-green-dark);
+  }
+
+  .testimonial-role {
+    font-size: var(--size-xs);
+    color: var(--color-text-muted);
+  }
+
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-1);
+    margin-top: var(--space-4);
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-border);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .carousel-dot.active {
+    background: var(--color-green-mid);
+    transform: scale(1.25);
+  }
+</style>
+
+<script>
+  const track = document.getElementById('testimonialTrack');
+  const dotsContainer = document.getElementById('carouselDots');
+  const cards = track ? Array.from(track.querySelectorAll('.testimonial-card')) : [];
+
+  if (cards.length > 1 && dotsContainer) {
+    cards.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Go to testimonial ${i + 1}`);
+      dot.addEventListener('click', () => {
+        cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      });
+      dotsContainer.appendChild(dot);
+    });
+
+    const dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const index = cards.indexOf(entry.target as HTMLElement);
+            dots.forEach((d, i) => d.classList.toggle('active', i === index));
+          }
+        });
+      },
+      { root: track, threshold: 0.6 }
+    );
+
+    cards.forEach(card => observer.observe(card));
+  }
+</script>

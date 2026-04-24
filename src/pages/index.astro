@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import UpdateCard from '../components/UpdateCard.astro';
 import EventCard from '../components/EventCard.astro';
 import Gallery from '../components/Gallery.astro';
+import Testimonials from '../components/Testimonials.astro';
 import { getCollection, render } from 'astro:content';
 
 const allUpdates = await getCollection('updates');
@@ -65,7 +66,7 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     </div>
   </section>
 
-  <div class="alt-bg" id="gallery">
+  <div class="section--alt" id="gallery">
     <div class="alt-wrap">
       <p class="section-label">Gallery</p>
       <h2>Life at the allotment</h2>
@@ -74,29 +75,37 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     </div>
   </div>
 
-  <section id="events">
+  <Testimonials />
+
+  <section class="section section--alt" id="events">
     <p class="section-label">Upcoming events</p>
     <h2>Come and join us</h2>
     <p class="section-intro">We hold regular sessions and seasonal celebrations throughout the year. All are welcome — no experience or prior involvement needed.</p>
-    <div class="events-list">
-      {events.map(async (event) => {
-        const { Content } = await render(event);
-        return (
-          <EventCard
-            title={event.data.title}
-            date={event.data.date}
-            display_date={event.data.display_date}
-            recurring={event.data.recurring}
-            recurring_label={event.data.recurring_label}
-          >
-            <Content />
-          </EventCard>
-        );
-      })}
-    </div>
+    {events.length > 0 ? (
+      <div class="events-list">
+        {events.map(async (event) => {
+          const { Content } = await render(event);
+          return (
+            <EventCard
+              title={event.data.title}
+              date={event.data.date}
+              display_date={event.data.display_date}
+              recurring={event.data.recurring}
+              recurring_label={event.data.recurring_label}
+            >
+              <Content />
+            </EventCard>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="events-empty">
+        <p>No events scheduled right now — check back soon, or follow us on <a href="https://www.facebook.com/p/Health-means-Wealth-100083095098532/" target="_blank" rel="noopener">Facebook</a> for the latest.</p>
+      </div>
+    )}
   </section>
 
-  <div class="alt-bg" id="updates">
+  <div id="updates">
     <div class="alt-wrap">
       <p class="section-label">Latest updates</p>
       <h2>From the allotment</h2>
@@ -119,7 +128,7 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     </div>
   </div>
 
-  <section id="recognition">
+  <section class="section section--alt" id="recognition">
     <p class="section-label">Recognition</p>
     <h2>What people say</h2>
     <p class="section-intro">Health Means Wealth has been recognised by local councillors, the Mayor of Hounslow, and community professionals for its impact on residents' lives.</p>
@@ -188,7 +197,7 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     </div>
   </section>
 
-  <div class="alt-bg" id="contact">
+  <div class="section--alt" id="contact">
     <div class="alt-wrap">
       <p class="section-label">Get in touch</p>
       <h2>Send us a message</h2>
@@ -203,7 +212,15 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
 
 <style>
   /* ---- Hero ---- */
-  .hero-wrap { background: var(--color-green-dark); }
+  .hero-wrap {
+    background: linear-gradient(
+      135deg,
+      var(--color-green-dark) 0%,
+      var(--color-green-deep) 60%,
+      var(--color-green-mid) 100%
+    );
+    position: relative;
+  }
   .hero {
     max-width: var(--max-width);
     margin: 0 auto;
@@ -286,25 +303,23 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
   }
   .pillar {
     background: var(--color-bg-alt);
-    border: 0.5px solid var(--color-border);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: 1.4rem;
+    padding: var(--space-4);
+    box-shadow: var(--shadow-sm);
     /* transition defined in global.css */
   }
   .pillar-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-sm);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--color-green-pale);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--size-lg);
-    margin-bottom: 14px;
+    font-size: var(--size-xl);
+    margin-bottom: var(--space-3);
   }
-  .pillar-icon--green  { background: var(--color-green-pale); }
-  .pillar-icon--orange { background: var(--color-accent-orange-pale); }
-  .pillar-icon--teal   { background: var(--color-accent-teal-pale); }
-  .pillar-icon--blue   { background: var(--color-accent-blue-pale); }
   .pillar h3 {
     font-size: var(--size-base);
     font-weight: var(--weight-bold);
