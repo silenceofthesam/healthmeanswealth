@@ -1,6 +1,7 @@
 ---
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
+import Icon from './Icon.astro';
 
 let images = [];
 try {
@@ -33,21 +34,33 @@ const showPlaceholders = images.length === 0;
         <div
           class={`gallery-item img-wrap ${p.cls}${i === 0 ? ' large' : ''}`}
           aria-label={`Placeholder: ${p.label}`}>
+          <Icon name="leaf" size={64} class="gallery-leaf" />
           <span class="gallery-label">{p.label}</span>
         </div>
       ))
     : images.map((src, i) => (
-        <div class={`gallery-item img-wrap${i === 0 ? ' large' : ''}`}>
+        <button
+          type="button"
+          class={`gallery-item img-wrap gallery-btn${i === 0 ? ' large' : ''}`}
+          data-full={src}
+          aria-label={`View photo ${i + 1} full size`}>
           <img
             src={src}
             alt={`Health Means Wealth — photo ${i + 1}`}
             loading="lazy"
             decoding="async"
           />
-        </div>
+        </button>
       ))
   }
 </div>
+
+{!showPlaceholders && (
+  <dialog class="lightbox" id="lightbox">
+    <button type="button" class="lightbox-close" aria-label="Close photo">&times;</button>
+    <img src="" alt="Health Means Wealth photo, full size" />
+  </dialog>
+)}
 
 <style>
   /* TASK 7 — mobile-first: 2 cols → 3 → 4 */
@@ -82,21 +95,95 @@ const showPlaceholders = images.length === 0;
     min-height: 280px;
   }
 
+  /* Real images shown as buttons (lightbox trigger) */
+  .gallery-btn {
+    border: none;
+    padding: 0;
+    background: none;
+    cursor: zoom-in;
+    display: block;
+    width: 100%;
+  }
+
   /* Gallery label */
   .gallery-label {
     position: absolute;
     bottom: 10px;
     left: 12px;
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.88);
     font-size: var(--size-xs);
     font-weight: var(--weight-bold);
+    letter-spacing: 0.02em;
   }
 
-  /* Placeholder background classes — colours reference tokens from global.css */
-  .ph-1 { background: var(--color-green-dark); }
-  .ph-2 { background: var(--color-placeholder-2); }
-  .ph-3 { background: var(--color-placeholder-3); }
-  .ph-4 { background: var(--color-placeholder-4); }
-  .ph-5 { background: var(--color-green-mid); }
-  .ph-6 { background: var(--color-green-light); }
+  /* Decorative leaf watermark on placeholders */
+  :global(.gallery-leaf) {
+    position: absolute;
+    right: -10px;
+    top: -8px;
+    color: rgba(255,255,255,0.14);
+    transform: rotate(-18deg);
+    pointer-events: none;
+  }
+
+  /* Placeholder gradients — soft, organic depth instead of flat blocks */
+  .ph-1 { background: linear-gradient(140deg, var(--color-green-dark), var(--color-placeholder-2)); }
+  .ph-2 { background: linear-gradient(140deg, var(--color-placeholder-2), var(--color-placeholder-3)); }
+  .ph-3 { background: linear-gradient(140deg, var(--color-placeholder-3), var(--color-placeholder-4)); }
+  .ph-4 { background: linear-gradient(140deg, var(--color-placeholder-4), var(--color-green-mid)); }
+  .ph-5 { background: linear-gradient(140deg, var(--color-green-mid), var(--color-green-light)); }
+  .ph-6 { background: linear-gradient(140deg, var(--color-green-light), var(--color-green-mid)); }
+
+  /* Lightbox */
+  .lightbox {
+    border: none;
+    padding: 0;
+    background: transparent;
+    max-width: min(92vw, 1100px);
+    max-height: 90vh;
+  }
+  .lightbox::backdrop {
+    background: rgba(20, 30, 12, 0.82);
+  }
+  .lightbox img {
+    max-width: min(92vw, 1100px);
+    max-height: 85vh;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-md);
+    display: block;
+    margin: 0 auto;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: -4px;
+    right: 4px;
+    z-index: 1;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
 </style>
+
+<script>
+  const lightbox = document.getElementById('lightbox') as HTMLDialogElement | null;
+  if (lightbox) {
+    const img = lightbox.querySelector('img');
+    document.querySelectorAll<HTMLButtonElement>('.gallery-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (img && btn.dataset.full) img.src = btn.dataset.full;
+        lightbox.showModal();
+      });
+    });
+    lightbox.querySelector('.lightbox-close')?.addEventListener('click', () => lightbox.close());
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) lightbox.close();
+    });
+  }
+</script>

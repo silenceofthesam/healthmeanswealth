@@ -26,6 +26,10 @@
     top: 0;
     z-index: 100;
     box-shadow: 0 1px 0 rgba(0,0,0,0.15);
+    transition: box-shadow var(--transition-base);
+  }
+  .nav-wrap.scrolled {
+    box-shadow: 0 2px 14px rgba(0,0,0,0.28);
   }
   .nav {
     max-width: var(--max-width);
@@ -55,7 +59,12 @@
     height: 2px;
     background: var(--color-bg-alt);
     border-radius: 2px;
+    transition: transform var(--transition-base), opacity var(--transition-fast);
   }
+  /* Burger → X when open */
+  .nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   .nav-links {
     display: none;
     flex-direction: column;
@@ -69,7 +78,14 @@
     border-top: 1px solid rgba(255,255,255,0.1);
     gap: 0;
   }
-  .nav-links.open { display: flex; }
+  .nav-links.open { display: flex; animation: menu-in 200ms ease; }
+  @keyframes menu-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-links.open { animation: none; }
+  }
   .nav-links a {
     color: var(--color-green-light);
     text-decoration: none;
@@ -78,6 +94,11 @@
     line-height: 1;
     display: block;
     /* transition defined in global.css */
+  }
+  /* Scrollspy — current section */
+  .nav-links a[aria-current="true"] {
+    color: var(--color-bg-alt);
+    font-weight: var(--weight-bold);
   }
 
   /* Tablet and up — inline nav, no burger */
@@ -105,11 +126,36 @@
   burger?.addEventListener('click', () => {
     const open = links?.classList.toggle('open');
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
   });
   links?.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
       links.classList.remove('open');
       burger?.setAttribute('aria-expanded', 'false');
+      burger?.setAttribute('aria-label', 'Open menu');
     });
   });
+
+  // Stronger shadow once the page is scrolled
+  const navWrap = document.querySelector('.nav-wrap');
+  const onScroll = () => navWrap?.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Scrollspy — highlight the nav link for the section in view
+  const navAnchors = [...(links?.querySelectorAll('a') ?? [])];
+  const sections = navAnchors
+    .map(a => document.getElementById(a.hash?.slice(1) ?? ''))
+    .filter((s): s is HTMLElement => !!s);
+  if (sections.length && 'IntersectionObserver' in window) {
+    const spy = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          navAnchors.forEach(a =>
+            a.setAttribute('aria-current', a.hash === `#${e.target.id}` ? 'true' : 'false'));
+        }
+      }
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    sections.forEach(s => spy.observe(s));
+  }
 </script>

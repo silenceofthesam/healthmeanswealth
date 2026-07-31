@@ -59,4 +59,17 @@ const isPast = !recurring && date < new Date();
     white-space: nowrap;
     flex-shrink: 0;
   }
+
+  /* Narrow screens: badge tucks under the title instead of
+     squeezing it (nowrap badge + flex row overflows otherwise) */
+  @media (max-width: 519px) {
+    .event-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: start;
+      row-gap: 8px;
+    }
+    .event-dot { margin-top: 7px; }
+    .event-badge { grid-column: 2; justify-self: start; }
+  }
 </style>

@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import UpdateCard from '../components/UpdateCard.astro';
 import EventCard from '../components/EventCard.astro';
 import Gallery from '../components/Gallery.astro';
+import Icon from '../components/Icon.astro';
 import { getCollection, render } from 'astro:content';
 
 const allUpdates = await getCollection('updates');
@@ -20,7 +21,7 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
   <Nav />
 
   <div class="hero-wrap" id="home">
-    <div class="hero">
+    <div class="hero" id="main-content">
       <div class="hero-badge">Community Allotment Group · Feltham, London</div>
       <h1>Growing food,<br><em>growing community</em></h1>
       <p class="hero-sub">Health Means Wealth is an inclusive allotment group at Heron Way in Feltham. We grow fresh fruit and vegetables, celebrate together, and show that urban spaces can be places of real nourishment — for body and spirit.</p>
@@ -29,12 +30,15 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
         <a href="/#events" class="btn-secondary">Upcoming events</a>
       </div>
       <div class="hero-stats" aria-label="Key facts">
-        <div class="hero-stat"><span class="stat-icon" aria-hidden="true">♿</span><small>Wheelchair accessible</small></div>
-        <div class="hero-stat"><span class="stat-icon" aria-hidden="true">🌿</span><small>Fruit and veg growing</small></div>
-        <div class="hero-stat"><span class="stat-icon" aria-hidden="true">🤝</span><small>All are welcome</small></div>
-        <div class="hero-stat"><span class="stat-icon" aria-hidden="true">🏆</span><small>Award recognised</small></div>
+        <div class="hero-stat"><span class="stat-icon"><Icon name="accessibility" size={22} /></span><small>Wheelchair accessible</small></div>
+        <div class="hero-stat"><span class="stat-icon"><Icon name="sprout" size={22} /></span><small>Fruit and veg growing</small></div>
+        <div class="hero-stat"><span class="stat-icon"><Icon name="users" size={22} /></span><small>All are welcome</small></div>
+        <div class="hero-stat"><span class="stat-icon"><Icon name="award" size={22} /></span><small>Award recognised</small></div>
       </div>
     </div>
+    <svg class="hero-wave" viewBox="0 0 1440 56" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,28 C240,56 480,0 720,14 C960,28 1200,50 1440,20 L1440,56 L0,56 Z" fill="var(--color-bg)"/>
+    </svg>
   </div>
 
   <section id="about">
@@ -43,22 +47,22 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     <p class="section-intro">Health Means Wealth was founded by Darshan and Gurlal Sandhu on a simple conviction: with care, patience, and a little imagination, even the most built-up corner of a city can be coaxed into life. At Heron Way in Feltham, they have done exactly that — building an allotment that brings together residents of all ages, backgrounds, and abilities, and showing what urban communities can quietly, steadily grow into.</p>
     <div class="pillars">
       <div class="pillar">
-        <div class="pillar-icon pillar-icon--green" aria-hidden="true">🥕</div>
+        <div class="pillar-icon pillar-icon--green"><Icon name="carrot" size={22} /></div>
         <h3>Growing fruit and veg</h3>
         <p>Hands-on growing for everyone who wants to join us. Learn to plant, tend, and harvest fresh produce from the ground up.</p>
       </div>
       <div class="pillar">
-        <div class="pillar-icon pillar-icon--orange" aria-hidden="true">🎉</div>
+        <div class="pillar-icon pillar-icon--orange"><Icon name="party" size={22} /></div>
         <h3>Community celebrations</h3>
         <p>From the King's Coronation to summer BBQs, we mark the seasons together with food, friendship, and festivities.</p>
       </div>
       <div class="pillar">
-        <div class="pillar-icon pillar-icon--teal" aria-hidden="true">♿</div>
+        <div class="pillar-icon pillar-icon--teal"><Icon name="accessibility" size={22} /></div>
         <h3>Fully inclusive</h3>
         <p>Wheelchair accessible throughout. Our volunteers include borough members with autism and Asperger's — everyone has a valued role here.</p>
       </div>
       <div class="pillar">
-        <div class="pillar-icon pillar-icon--blue" aria-hidden="true">🌍</div>
+        <div class="pillar-icon pillar-icon--blue"><Icon name="heart" size={22} /></div>
         <h3>Health and wellbeing</h3>
         <p>Fresh air, physical activity, and genuine community connection — all proven to benefit mental and physical health.</p>
       </div>
@@ -163,28 +167,28 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
       </div>
       <div class="contact-details">
         <div class="contact-row">
-          <div class="contact-icon" aria-hidden="true">📧</div>
+          <div class="contact-icon"><Icon name="mail" size={18} /></div>
           <div>
             <h3>Email</h3>
             <a href="mailto:hello@healthmeanswealth.org.uk">hello@healthmeanswealth.org.uk</a>
           </div>
         </div>
         <div class="contact-row">
-          <div class="contact-icon" aria-hidden="true">📅</div>
+          <div class="contact-icon"><Icon name="calendar" size={18} /></div>
           <div>
             <h3>Regular sessions</h3>
             <p>Tuesdays 10am–12pm (coffee morning)<br />Plus seasonal events throughout the year</p>
           </div>
         </div>
         <div class="contact-row">
-          <div class="contact-icon" aria-hidden="true">♿</div>
+          <div class="contact-icon"><Icon name="accessibility" size={18} /></div>
           <div>
             <h3>Accessibility</h3>
             <p>The allotment is fully wheelchair accessible. All abilities and ages are welcome.</p>
           </div>
         </div>
         <div class="contact-row">
-          <div class="contact-icon" aria-hidden="true">🚌</div>
+          <div class="contact-icon"><Icon name="bus" size={18} /></div>
           <div>
             <h3>Getting here</h3>
             <p>Accessible by bus from Feltham town centre. Free street parking nearby.</p>
@@ -199,7 +203,7 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
       <p class="section-label">Get in touch</p>
       <h2>Send us a message</h2>
       <p class="section-intro">Whether you want to volunteer, visit, ask a question, or find out about partnership or funding opportunities — we would love to hear from you.</p>
-      <iframe data-tally-src="https://tally.so/embed/68O1Kk?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="681" frameborder="0" marginheight="0" marginwidth="0" title="Health Means Wealth"></iframe>
+      <iframe class="contact-form" data-tally-src="https://tally.so/embed/68O1Kk?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="681" frameborder="0" marginheight="0" marginwidth="0" title="Health Means Wealth contact form"></iframe>
       <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
     </div>
   </div>
@@ -217,12 +221,31 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
       var(--color-green-mid) 100%
     );
     position: relative;
+    overflow: hidden;
+  }
+  /* Soft organic glows — subtle depth without imagery */
+  .hero-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 55% at 15% 110%, rgba(168,208,112,0.22), transparent),
+      radial-gradient(ellipse 50% 60% at 88% -15%, rgba(122,182,72,0.18), transparent);
+    pointer-events: none;
   }
   .hero {
+    position: relative;
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 4.5rem var(--space-3) 3.5rem;
     text-align: center;
+  }
+  .hero-wave {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 40px;
+    margin-top: var(--space-2);
   }
   .hero-badge {
     display: inline-block;
@@ -289,7 +312,12 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     flex-wrap: wrap;
   }
   .hero-stat { text-align: center; }
-  .stat-icon { display: block; font-size: var(--size-xl); margin-bottom: 6px; }
+  .stat-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+    color: var(--color-green-light);
+  }
   .hero-stat small { color: rgba(255,255,255,0.6); font-size: var(--size-xs); }
 
   /* ---- Pillars — mobile first (1 → 2 → 3 columns) ---- */
@@ -311,12 +339,15 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     height: 48px;
     border-radius: 50%;
     background: var(--color-green-pale);
+    color: var(--color-tag-event-text);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--size-xl);
     margin-bottom: var(--space-3);
   }
+  .pillar-icon--orange { background: var(--color-accent-orange-pale); color: var(--color-tag-news-text); }
+  .pillar-icon--teal   { background: var(--color-accent-teal-pale);   color: var(--color-tag-grow-text); }
+  .pillar-icon--blue   { background: var(--color-accent-blue-pale);   color: var(--color-tag-community-text); }
   .pillar h3 {
     font-size: var(--size-base);
     font-weight: var(--weight-bold);
@@ -328,6 +359,14 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     color: var(--color-text-muted);
     line-height: var(--leading-body);
     max-width: none;
+  }
+
+  /* ---- Contact form embed ---- */
+  .contact-form {
+    display: block;
+    max-width: 720px;
+    min-height: 420px;
+    border-radius: var(--radius-md);
   }
 
   /* ---- Event / Update lists ---- */
@@ -385,11 +424,11 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     width: 34px;
     height: 34px;
     background: var(--color-green-pale);
+    color: var(--color-green-dark);
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--size-base);
     flex-shrink: 0;
   }
   .contact-row h3 {
