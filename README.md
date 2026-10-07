@@ -22,8 +22,20 @@
 ## Adding photos
 
 Drag photos into public/images/gallery/
-The gallery will show them automatically on the next push.
+The gallery carousel will show them automatically on the next push.
 Use .jpg or .webp format. Keep files under 1MB each.
+
+Captions, order and descriptions live in src/data/gallery.json — one line per photo:
+
+  { "file": "my-photo.jpg", "caption": "What visitors see under the photo", "alt": "Description for screen readers" }
+
+Photos are shown in the order listed. A photo that isn't listed still appears
+(at the end, without a caption).
+
+## Founders' photo
+
+Save the photo as public/images/founders.jpg (or .png / .webp). It appears
+next to the "What we do" text automatically. Portrait (taller than wide) works best.
 
 ## Publishing any change
 

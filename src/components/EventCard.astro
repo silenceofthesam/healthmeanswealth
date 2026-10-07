@@ -11,7 +11,9 @@ const isPast = !recurring && date < new Date();
 ---
 {!isPast && (
   <article class="event-card">
-    <div class="event-dot" aria-hidden="true"></div>
+    <div class="event-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+    </div>
     <div class="event-info">
       <h3>{title}</h3>
       <slot />
@@ -24,52 +26,53 @@ const isPast = !recurring && date < new Date();
   .event-card {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    background: var(--color-bg-alt);
-    border: 0.5px solid var(--color-border);
+    gap: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: var(--space-2) 1.25rem;
-    /* transition defined in global.css */
+    padding: var(--space-3);
+    box-shadow: var(--shadow-sm);
   }
-  .event-dot {
-    width: 10px;
-    height: 10px;
-    background: var(--color-green-mid);
-    border-radius: 50%;
+  .event-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--color-accent-pale);
+    color: var(--color-accent);
+    display: grid;
+    place-items: center;
     flex-shrink: 0;
   }
   .event-info { flex: 1; }
   .event-info h3 {
-    font-size: var(--size-base);
-    font-weight: var(--weight-medium);
-    margin-bottom: 2px;
-    color: var(--color-text);
+    font-size: var(--size-lg);
+    margin-bottom: 4px;
   }
   .event-info :global(p) {
-    font-size: var(--size-sm);
+    font-size: var(--size-base);
     color: var(--color-text-muted);
     max-width: none;
   }
   .event-badge {
     background: var(--color-green-dark);
-    color: var(--color-green-light);
-    font-size: var(--size-xs);
-    padding: 5px 11px;
-    border-radius: var(--radius-sm);
+    color: var(--color-white);
+    font-size: var(--size-sm);
+    font-weight: var(--weight-bold);
+    padding: 8px 16px;
+    border-radius: var(--radius-pill);
     white-space: nowrap;
     flex-shrink: 0;
   }
 
-  /* Narrow screens: badge tucks under the title instead of
-     squeezing it (nowrap badge + flex row overflows otherwise) */
-  @media (max-width: 519px) {
+  /* Narrow screens: badge tucks under the title instead of squeezing it */
+  @media (max-width: 599px) {
     .event-card {
       display: grid;
       grid-template-columns: auto 1fr;
       align-items: start;
-      row-gap: 8px;
+      gap: 10px var(--space-2);
     }
-    .event-dot { margin-top: 7px; }
+    .event-icon { width: 44px; height: 44px; }
     .event-badge { grid-column: 2; justify-self: start; }
   }
 </style>

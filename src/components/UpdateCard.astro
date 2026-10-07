@@ -6,8 +6,6 @@ export interface Props {
   slug: string;
 }
 const { title, date, tag, slug } = Astro.props;
-const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
-const month = date.toLocaleDateString('en-GB', { month: 'short' });
 const tagClass = {
   'Event recap':    'tag-event',
   'News':           'tag-news',
@@ -16,65 +14,56 @@ const tagClass = {
 };
 ---
 <article class="update-card">
-  <div class="update-date" aria-label={date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}>
-    <strong>{day}</strong>
-    <small>{month}</small>
-  </div>
-  <div class="update-body">
+  <div class="update-meta">
     <span class={`tag ${tagClass[tag] ?? 'tag-news'}`}>{tag}</span>
-    <h3>{title}</h3>
-    <slot />
+    <time datetime={date.toISOString().slice(0, 10)}>{date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
   </div>
+  <h3>{title}</h3>
+  <div class="update-body"><slot /></div>
 </article>
 
 <style>
   .update-card {
     display: flex;
-    gap: 1.25rem;
-    background: var(--color-bg-alt);
-    border: 0.5px solid var(--color-border);
-    border-left: 3px solid var(--color-green-mid);
+    flex-direction: column;
+    gap: 10px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: 1.25rem;
-    padding-left: var(--space-3);
+    padding: var(--space-3);
+    box-shadow: var(--shadow-sm);
+    height: 100%;
   }
-  .update-date { min-width: 44px; text-align: center; flex-shrink: 0; }
-  .update-date strong {
-    display: block;
-    /*
-     * 24px has no exact token (--size-xl is ~22px, --size-2xl is ~28px).
-     * Using --size-2xl (1.75rem) as the closest larger option for the date numeral.
-     */
-    font-size: var(--size-2xl);
-    font-weight: var(--weight-bold);
-    color: var(--color-green-dark);
-    line-height: 1;
+  .update-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
   }
-  .update-date small {
-    font-size: var(--size-xs);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .update-body h3 {
-    font-size: var(--size-base);
-    font-weight: var(--weight-medium);
-    color: var(--color-text);
-    margin: 4px 0 6px;
-  }
-  .update-body :global(p) {
+  .update-meta time {
     font-size: var(--size-sm);
     color: var(--color-text-muted);
-    line-height: var(--leading-body);
+  }
+  .update-card h3 {
+    font-family: var(--font-heading);
+    font-size: var(--size-xl);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .update-body :global(p) {
+    font-size: var(--size-base);
+    color: var(--color-text-muted);
     max-width: none;
   }
+  .update-body :global(p + p) { margin-top: 0.8em; }
+  .update-body :global(img) { border-radius: var(--radius-sm); margin: 0.8em 0; }
   .tag {
     display: inline-block;
     font-size: var(--size-xs);
     font-weight: var(--weight-bold);
-    padding: 3px 9px;
-    border-radius: var(--radius-sm);
-    margin-bottom: 4px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
   }
   .tag-event    { background: var(--color-tag-event-bg);     color: var(--color-tag-event-text); }
   .tag-news     { background: var(--color-tag-news-bg);      color: var(--color-tag-news-text); }

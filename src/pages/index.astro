@@ -1,4 +1,6 @@
 ---
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -15,103 +17,150 @@ const updates = allUpdates
 
 const allEvents = await getCollection('events');
 const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+
+/*
+ * Founders' photo: drop a file named founders.jpg (or .jpeg/.png/.webp)
+ * into public/images/. Until then the About section shows text only
+ * (a placeholder frame appears in local preview so the layout can be checked).
+ */
+let foundersPhoto: string | null = null;
+try {
+  const f = (await readdir(join(process.cwd(), 'public/images')))
+    .find(n => /^founders\.(jpe?g|png|webp)$/i.test(n));
+  if (f) foundersPhoto = `/images/${f}`;
+} catch {}
+const showFoundersFrame = !!foundersPhoto || import.meta.env.DEV;
+
+const heroImage = '/images/gallery/1-summer2025.jpg';
 ---
 
 <Base>
   <Nav />
 
-  <div class="hero-wrap" id="home">
-    <div class="hero" id="main-content">
-      <div class="hero-badge">Community Allotment Group · Feltham, London</div>
-      <h1>Growing food,<br><em>growing community</em></h1>
-      <p class="hero-sub">Health Means Wealth is an inclusive allotment group at Heron Way in Feltham. We grow fresh fruit and vegetables, celebrate together, and show that urban spaces can be places of real nourishment — for body and spirit.</p>
+  <!-- ===== Hero ===== -->
+  <header class="hero" id="home" style={`--hero-img: url('${heroImage}')`}>
+    <div class="hero-inner" id="main-content">
+      <p class="hero-badge">Community allotment group · Feltham, London</p>
+      <h1 class="hero-title">Health Means Wealth</h1>
+      <p class="hero-tagline">Growing food, growing community</p>
+      <p class="hero-sub">An inclusive allotment at Heron Way where neighbours of every age and ability grow fresh fruit and vegetables, celebrate the seasons together, and find a little calm in the middle of the city.</p>
       <div class="hero-btns">
-        <a href="/#contact" class="btn-primary">Get involved</a>
-        <a href="/#events" class="btn-secondary">Upcoming events</a>
-      </div>
-      <div class="hero-stats" aria-label="Key facts">
-        <div class="hero-stat"><span class="stat-icon"><Icon name="accessibility" size={22} /></span><small>Wheelchair accessible</small></div>
-        <div class="hero-stat"><span class="stat-icon"><Icon name="sprout" size={22} /></span><small>Fruit and veg growing</small></div>
-        <div class="hero-stat"><span class="stat-icon"><Icon name="users" size={22} /></span><small>All are welcome</small></div>
-        <div class="hero-stat"><span class="stat-icon"><Icon name="award" size={22} /></span><small>Award recognised</small></div>
+        <a href="/#contact" class="btn btn-primary">Get involved</a>
+        <a href="/#events" class="btn btn-ghost">Upcoming events</a>
       </div>
     </div>
-    <svg class="hero-wave" viewBox="0 0 1440 56" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,28 C240,56 480,0 720,14 C960,28 1200,50 1440,20 L1440,56 L0,56 Z" fill="var(--color-bg)"/>
-    </svg>
-  </div>
+    <ul class="hero-facts" role="list" aria-label="Key facts">
+      <li><Icon name="accessibility" size={18} /> Wheelchair accessible</li>
+      <li><Icon name="sprout" size={18} /> Fruit &amp; veg growing</li>
+      <li><Icon name="users" size={18} /> All are welcome</li>
+      <li><Icon name="award" size={18} /> Award recognised</li>
+    </ul>
+  </header>
 
-  <section id="about">
-    <p class="section-label">What we do</p>
-    <h2>A patch of green in the heart of Feltham</h2>
-    <p class="section-intro">Health Means Wealth was founded by Darshan and Gurlal Sandhu on a simple conviction: with care, patience, and a little imagination, even the most built-up corner of a city can be coaxed into life. At Heron Way in Feltham, they have done exactly that — building an allotment that brings together residents of all ages, backgrounds, and abilities, and showing what urban communities can quietly, steadily grow into.</p>
-    <div class="pillars">
-      <div class="pillar">
-        <div class="pillar-icon pillar-icon--green"><Icon name="carrot" size={22} /></div>
-        <h3>Growing fruit and veg</h3>
-        <p>Hands-on growing for everyone who wants to join us. Learn to plant, tend, and harvest fresh produce from the ground up.</p>
+  <!-- ===== About ===== -->
+  <section class="band" id="about">
+    <div class="band-inner">
+      <div class={`about-grid${showFoundersFrame ? ' has-photo' : ''}`}>
+        <div class="about-text">
+          <p class="section-label">What we do</p>
+          <h2>A patch of green in the heart of Feltham</h2>
+          <p class="section-intro">Health Means Wealth was founded by Darshan and Gurlal Sandhu on a simple conviction: with care, patience, and a little imagination, even the most built-up corner of a city can be coaxed into life.</p>
+          <p class="about-more">At Heron Way in Feltham, they have done exactly that — building an allotment that brings together residents of all ages, backgrounds, and abilities, and showing what urban communities can quietly, steadily grow into.</p>
+        </div>
+        {showFoundersFrame && (
+          <figure class="founders">
+            {foundersPhoto ? (
+              <img src={foundersPhoto} alt="Darshan and Gurlal Sandhu at the Heron Way allotment" loading="lazy" decoding="async" />
+            ) : (
+              <div class="founders-placeholder" aria-hidden="true">
+                <Icon name="users" size={40} />
+                <span>Founders' photo goes here<br /><code>public/images/founders.jpg</code></span>
+              </div>
+            )}
+            <figcaption>Darshan and Gurlal Sandhu, founders</figcaption>
+          </figure>
+        )}
       </div>
-      <div class="pillar">
-        <div class="pillar-icon pillar-icon--orange"><Icon name="party" size={22} /></div>
-        <h3>Community celebrations</h3>
-        <p>From the King's Coronation to summer BBQs, we mark the seasons together with food, friendship, and festivities.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-icon pillar-icon--teal"><Icon name="accessibility" size={22} /></div>
-        <h3>Fully inclusive</h3>
-        <p>Wheelchair accessible throughout. Our volunteers include borough members with autism and Asperger's — everyone has a valued role here.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-icon pillar-icon--blue"><Icon name="heart" size={22} /></div>
-        <h3>Health and wellbeing</h3>
-        <p>Fresh air, physical activity, and genuine community connection — all proven to benefit mental and physical health.</p>
+
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-icon pillar-icon--moss"><Icon name="carrot" size={22} /></div>
+          <h3>Growing fruit and veg</h3>
+          <p>Hands-on growing for everyone who wants to join us. Learn to plant, tend, and harvest fresh produce from the ground up.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon pillar-icon--terracotta"><Icon name="party" size={22} /></div>
+          <h3>Community celebrations</h3>
+          <p>From the King's Coronation to summer BBQs, we mark the seasons together with food, friendship, and festivities.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon pillar-icon--sun"><Icon name="accessibility" size={22} /></div>
+          <h3>Fully inclusive</h3>
+          <p>Wheelchair accessible throughout. Our volunteers include borough members with autism and Asperger's — everyone has a valued role here.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon pillar-icon--moss"><Icon name="heart" size={22} /></div>
+          <h3>Health and wellbeing</h3>
+          <p>Fresh air, physical activity, and genuine community connection — all proven to benefit mental and physical health.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <div class="section--alt" id="gallery">
-    <div class="alt-wrap">
-      <p class="section-label">Gallery</p>
-      <h2>Life at the allotment</h2>
-      <p class="section-intro">A glimpse of what we get up to across the seasons — from planting and harvest days to celebrations and community events.</p>
+  <!-- ===== Gallery ===== -->
+  <section class="band band--sand" id="gallery">
+    <div class="band-inner">
+      <div class="section-head">
+        <p class="section-label">Gallery</p>
+        <h2>Life at the allotment</h2>
+        <p class="section-intro">A glimpse of what we get up to across the seasons — from planting and harvest days to celebrations and community events.</p>
+      </div>
       <Gallery />
     </div>
-  </div>
-
-  <section class="section section--alt" id="events">
-    <p class="section-label">Upcoming events</p>
-    <h2>Come and join us</h2>
-    <p class="section-intro">We hold regular sessions and seasonal celebrations throughout the year. All are welcome — no experience or prior involvement needed.</p>
-    {events.length > 0 ? (
-      <div class="events-list">
-        {events.map(async (event) => {
-          const { Content } = await render(event);
-          return (
-            <EventCard
-              title={event.data.title}
-              date={event.data.date}
-              display_date={event.data.display_date}
-              recurring={event.data.recurring}
-              recurring_label={event.data.recurring_label}
-            >
-              <Content />
-            </EventCard>
-          );
-        })}
-      </div>
-    ) : (
-      <div class="events-empty">
-        <p>No events scheduled right now — check back soon, or follow us on <a href="https://www.facebook.com/p/Health-means-Wealth-100083095098532/" target="_blank" rel="noopener">Facebook</a> for the latest.</p>
-      </div>
-    )}
   </section>
 
-  <div id="updates">
-    <div class="alt-wrap">
-      <p class="section-label">Latest updates</p>
-      <h2>From the allotment</h2>
-      <p class="section-intro">News, event recaps, and seasonal notes from the team at Heron Way.</p>
-      <div class="updates-list">
+  <!-- ===== Events ===== -->
+  <section class="band" id="events">
+    <div class="band-inner">
+      <div class="section-head">
+        <p class="section-label">Upcoming events</p>
+        <h2>Come and join us</h2>
+        <p class="section-intro">We hold regular sessions and seasonal celebrations throughout the year. All are welcome — no experience or prior involvement needed.</p>
+      </div>
+      {events.length > 0 ? (
+        <div class="events-list">
+          {events.map(async (event) => {
+            const { Content } = await render(event);
+            return (
+              <EventCard
+                title={event.data.title}
+                date={event.data.date}
+                display_date={event.data.display_date}
+                recurring={event.data.recurring}
+                recurring_label={event.data.recurring_label}
+              >
+                <Content />
+              </EventCard>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="events-empty">
+          <p>No events scheduled right now — check back soon, or follow us on <a href="https://www.facebook.com/p/Health-means-Wealth-100083095098532/" target="_blank" rel="noopener">Facebook</a> for the latest.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ===== Updates ===== -->
+  <section class="band band--sand" id="updates">
+    <div class="band-inner">
+      <div class="section-head">
+        <p class="section-label">Latest updates</p>
+        <h2>From the allotment</h2>
+        <p class="section-intro">News, event recaps, and seasonal notes from the team at Heron Way.</p>
+      </div>
+      <div class="updates-grid">
         {updates.map(async (update) => {
           const { Content } = await render(update);
           return (
@@ -127,153 +176,164 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
         })}
       </div>
     </div>
-  </div>
+  </section>
 
-  <section class="section section--alt" id="recognition">
-    <p class="section-label">Recognition</p>
-    <h2>What people say</h2>
-    <p class="section-intro">Health Means Wealth has been recognised by local councillors, the Mayor of Hounslow, and community professionals for its impact on residents' lives.</p>
-    <div class="testimonials">
-      <div class="testimonial">
-        <blockquote>"Health Means Wealth has been a generous and uplifting partner to Autism Hounslow. They've opened up their beautiful sensory garden for our BBQs, gatherings, and quiet moments of rest - giving our community a space to breathe, connect and just be ourselves. Their support has made a real difference to our members and we're genuinely grateful for everything they've shared with us."</blockquote>
-        <cite>— Roseann Connolly, Austism Hounslow</cite>
+  <!-- ===== Recognition ===== -->
+  <section class="band band--dark" id="recognition">
+    <div class="band-inner">
+      <div class="section-head section-head--center">
+        <p class="section-label">Recognition</p>
+        <h2>What people say</h2>
+        <p class="section-intro">Health Means Wealth has been recognised by local councillors, the Mayor of Hounslow, and community professionals for its impact on residents' lives.</p>
       </div>
-      <div class="testimonial">
-        <blockquote>"Health Means Wealth is a wonderful, welcoming resource for people of varying capacities to get outside, enjoy nature and be social."</blockquote>
-        <cite>— Rinn Roche, Heron Way Community Allotments</cite>
-      </div>
-      <div class="testimonial">
-        <blockquote>"An outstanding community initiative."</blockquote>
-        <cite>— Sam, Volunteer</cite>
+      <div class="testimonials">
+        <figure class="testimonial testimonial--feature">
+          <blockquote>Health Means Wealth has been a generous and uplifting partner to Autism Hounslow. They've opened up their beautiful sensory garden for our BBQs, gatherings, and quiet moments of rest — giving our community a space to breathe, connect and just be ourselves. Their support has made a real difference to our members and we're genuinely grateful for everything they've shared with us.</blockquote>
+          <figcaption><strong>Roseann Connolly</strong><span>Autism Hounslow</span></figcaption>
+        </figure>
+        <figure class="testimonial">
+          <blockquote>Health Means Wealth is a wonderful, welcoming resource for people of varying capacities to get outside, enjoy nature and be social.</blockquote>
+          <figcaption><strong>Rinn Roche</strong><span>Heron Way Community Allotments</span></figcaption>
+        </figure>
+        <figure class="testimonial">
+          <blockquote>An outstanding community initiative.</blockquote>
+          <figcaption><strong>Sam</strong><span>Volunteer</span></figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
-  <section id="find-us">
-    <p class="section-label">Find us</p>
-    <h2>Come and visit</h2>
-    <div class="find-us-grid">
-      <div class="map-wrap">
-        <iframe
-          title="Heron Way Community Allotments on Google Maps"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2485.6861359712007!2d-0.41486412393185496!3d51.4639188138796!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487673052f7d4c87%3A0xbb816b7b663b5018!2sHeron%20Way%20Community%20Allotments!5e0!3m2!1sen!2suk!4v1775939707992!5m2!1sen!2suk"
-          height="280"
-          class="map-iframe"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-        <p class="map-address">Heron Way Community Allotments, Feltham, London TW13</p>
+  <!-- ===== Find us ===== -->
+  <section class="band" id="find-us">
+    <div class="band-inner">
+      <div class="section-head">
+        <p class="section-label">Find us</p>
+        <h2>Come and visit</h2>
       </div>
-      <div class="contact-details">
-        <div class="contact-row">
-          <div class="contact-icon"><Icon name="mail" size={18} /></div>
-          <div>
-            <h3>Email</h3>
-            <a href="mailto:hello@healthmeanswealth.org.uk">hello@healthmeanswealth.org.uk</a>
-          </div>
+      <div class="find-us-grid">
+        <div class="map-wrap">
+          <iframe
+            title="Heron Way Community Allotments on Google Maps"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2485.6861359712007!2d-0.41486412393185496!3d51.4639188138796!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487673052f7d4c87%3A0xbb816b7b663b5018!2sHeron%20Way%20Community%20Allotments!5e0!3m2!1sen!2suk!4v1775939707992!5m2!1sen!2suk"
+            class="map-iframe"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+          <p class="map-address">Heron Way Community Allotments, Feltham, London TW13</p>
         </div>
-        <div class="contact-row">
-          <div class="contact-icon"><Icon name="calendar" size={18} /></div>
-          <div>
-            <h3>Regular sessions</h3>
-            <p>Tuesdays 10am–12pm (coffee morning)<br />Plus seasonal events throughout the year</p>
+        <div class="contact-details">
+          <div class="contact-row">
+            <div class="contact-icon"><Icon name="mail" size={18} /></div>
+            <div>
+              <h3>Email</h3>
+              <a href="mailto:hello@healthmeanswealth.org.uk">hello@healthmeanswealth.org.uk</a>
+            </div>
           </div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-icon"><Icon name="accessibility" size={18} /></div>
-          <div>
-            <h3>Accessibility</h3>
-            <p>The allotment is fully wheelchair accessible. All abilities and ages are welcome.</p>
+          <div class="contact-row">
+            <div class="contact-icon"><Icon name="calendar" size={18} /></div>
+            <div>
+              <h3>Regular sessions</h3>
+              <p>Tuesdays 10am–12pm (coffee morning)<br />Plus seasonal events throughout the year</p>
+            </div>
           </div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-icon"><Icon name="bus" size={18} /></div>
-          <div>
-            <h3>Getting here</h3>
-            <p>Accessible by bus from Feltham town centre. Free street parking nearby.</p>
+          <div class="contact-row">
+            <div class="contact-icon"><Icon name="accessibility" size={18} /></div>
+            <div>
+              <h3>Accessibility</h3>
+              <p>The allotment is fully wheelchair accessible. All abilities and ages are welcome.</p>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon"><Icon name="bus" size={18} /></div>
+            <div>
+              <h3>Getting here</h3>
+              <p>Accessible by bus from Feltham town centre. Free street parking nearby.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="section--alt" id="contact">
-    <div class="alt-wrap">
-      <p class="section-label">Get in touch</p>
-      <h2>Send us a message</h2>
-      <p class="section-intro">Whether you want to volunteer, visit, ask a question, or find out about partnership or funding opportunities — we would love to hear from you.</p>
-      <iframe class="contact-form" data-tally-src="https://tally.so/embed/68O1Kk?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="681" frameborder="0" marginheight="0" marginwidth="0" title="Health Means Wealth contact form"></iframe>
-      <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
+  <!-- ===== Contact ===== -->
+  <section class="band band--sand" id="contact">
+    <div class="band-inner">
+      <div class="contact-card">
+        <div class="section-head">
+          <p class="section-label">Get in touch</p>
+          <h2>Send us a message</h2>
+          <p class="section-intro">Whether you want to volunteer, visit, ask a question, or find out about partnership or funding opportunities — we would love to hear from you.</p>
+        </div>
+        <iframe class="contact-form" data-tally-src="https://tally.so/embed/68O1Kk?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="681" frameborder="0" marginheight="0" marginwidth="0" title="Health Means Wealth contact form"></iframe>
+        <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
+      </div>
     </div>
-  </div>
+  </section>
 
   <Footer />
 </Base>
 
 <style>
   /* ---- Hero ---- */
-  .hero-wrap {
-    background: linear-gradient(
-      135deg,
-      var(--color-green-dark) 0%,
-      var(--color-green-deep) 60%,
-      var(--color-green-mid) 100%
-    );
-    position: relative;
-    overflow: hidden;
-  }
-  /* Soft organic glows — subtle depth without imagery */
-  .hero-wrap::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 55% at 15% 110%, rgba(168,208,112,0.22), transparent),
-      radial-gradient(ellipse 50% 60% at 88% -15%, rgba(122,182,72,0.18), transparent);
-    pointer-events: none;
-  }
   .hero {
     position: relative;
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 4.5rem var(--space-3) 3.5rem;
-    text-align: center;
+    min-height: min(88vh, 760px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--color-white);
+    background:
+      linear-gradient(180deg, rgba(20,38,28,0.42) 0%, rgba(20,38,28,0.62) 55%, rgba(20,38,28,0.90) 100%),
+      var(--hero-img) center 40% / cover no-repeat,
+      var(--color-green-dark);
+    overflow: hidden;
   }
-  .hero-wave {
+  .hero-inner {
     position: relative;
-    display: block;
+    max-width: var(--max-width);
     width: 100%;
-    height: 40px;
-    margin-top: var(--space-2);
+    margin: 0 auto;
+    padding: var(--space-8) var(--gutter) var(--space-6);
+    text-align: center;
   }
   .hero-badge {
     display: inline-block;
-    background: rgba(168,208,112,0.15);
-    border: 1px solid rgba(168,208,112,0.35);
-    color: var(--color-green-light);
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.28);
+    color: var(--color-white);
     font-size: var(--size-xs);
-    letter-spacing: 1.5px;
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    padding: 5px 16px;
-    border-radius: var(--radius-lg);
-    margin-bottom: var(--space-3);
+    padding: 6px 16px;
+    border-radius: var(--radius-pill);
+    margin: 0 auto var(--space-3);
+    max-width: none;
+    backdrop-filter: blur(4px);
   }
-  /* Mobile base — heading starts at size-2xl; scaled up in breakpoints below */
-  .hero h1 {
-    color: var(--color-bg-alt);
-    font-size: var(--size-2xl);
-    font-weight: var(--weight-bold);
-    line-height: var(--leading-tight);
-    margin-bottom: var(--space-3);
+  .hero-title {
+    color: var(--color-white);
+    font-size: clamp(2.6rem, 9vw, 5.5rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    text-shadow: 0 2px 30px rgba(0,0,0,0.25);
   }
-  .hero h1 em { color: var(--color-green-light); font-style: normal; }
+  .hero-tagline {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(1.25rem, 3.4vw, 1.9rem);
+    color: var(--color-green-light);
+    margin: var(--space-2) auto var(--space-3);
+    max-width: none;
+  }
   .hero-sub {
-    color: rgba(255,255,255,0.8);
-    font-size: var(--size-lg);
-    max-width: 580px;
+    color: rgba(255,255,255,0.88);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    max-width: 600px;
     margin: 0 auto var(--space-4);
-    line-height: var(--leading-body);
   }
   .hero-btns {
     display: flex;
@@ -281,183 +341,242 @@ const events = allEvents.sort((a, b) => a.data.date.valueOf() - b.data.date.valu
     justify-content: center;
     flex-wrap: wrap;
   }
-
-  /* Button base styles — hover/transition defined in global.css */
-  .btn-primary {
-    background: var(--color-green-mid);
-    color: var(--color-bg-alt);
-    text-decoration: none;
-    padding: 13px 26px;
-    border-radius: var(--radius-sm);
-    font-size: var(--size-sm);
-    font-weight: var(--weight-bold);
-  }
-  .btn-secondary {
-    background: transparent;
-    color: var(--color-green-light);
-    text-decoration: none;
-    border: 1px solid rgba(168,208,112,0.45);
-    padding: 13px 26px;
-    border-radius: var(--radius-sm);
-    font-size: var(--size-sm);
-  }
-
-  .hero-stats {
+  .hero-facts {
+    position: relative;
+    list-style: none;
     display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-top: var(--space-6);
-    padding-top: var(--space-4);
-    border-top: 1px solid rgba(255,255,255,0.1);
     flex-wrap: wrap;
-  }
-  .hero-stat { text-align: center; }
-  .stat-icon {
-    display: flex;
     justify-content: center;
-    margin-bottom: 8px;
-    color: var(--color-green-light);
+    gap: 10px;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--gutter) var(--space-4);
   }
-  .hero-stat small { color: rgba(255,255,255,0.6); font-size: var(--size-xs); }
+  .hero-facts li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.92);
+    font-size: var(--size-sm);
+    backdrop-filter: blur(4px);
+  }
+  .hero-facts :global(svg) { color: var(--color-sun); }
 
-  /* ---- Pillars — mobile first (1 → 2 → 3 columns) ---- */
+  /* ---- About ---- */
+  .about-grid {
+    display: grid;
+    gap: var(--space-4);
+    align-items: center;
+    margin-bottom: var(--space-6);
+  }
+  .about-more {
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+  }
+  .founders { margin: 0 auto; max-width: 360px; width: 100%; }
+  .founders img,
+  .founders-placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+  }
+  .founders-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+    background: var(--color-green-pale);
+    border: 2px dashed var(--color-green-mid);
+    color: var(--color-green-mid);
+    font-size: var(--size-sm);
+    box-shadow: none;
+  }
+  .founders-placeholder code { font-size: var(--size-xs); }
+  .founders figcaption {
+    margin-top: 12px;
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+    font-style: italic;
+  }
+
   .pillars {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-2);
   }
   .pillar {
-    background: var(--color-bg-alt);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: var(--space-4);
+    padding: var(--space-3);
     box-shadow: var(--shadow-sm);
-    /* transition defined in global.css */
   }
   .pillar-icon {
     width: 48px;
     height: 48px;
-    border-radius: 50%;
-    background: var(--color-green-pale);
-    color: var(--color-tag-event-text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--space-3);
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    margin-bottom: var(--space-2);
   }
-  .pillar-icon--orange { background: var(--color-accent-orange-pale); color: var(--color-tag-news-text); }
-  .pillar-icon--teal   { background: var(--color-accent-teal-pale);   color: var(--color-tag-grow-text); }
-  .pillar-icon--blue   { background: var(--color-accent-blue-pale);   color: var(--color-tag-community-text); }
+  .pillar-icon--moss       { background: var(--color-green-pale);  color: var(--color-green-mid); }
+  .pillar-icon--terracotta { background: var(--color-accent-pale); color: var(--color-accent); }
+  .pillar-icon--sun        { background: var(--color-sun-pale);    color: #8A5F14; }
   .pillar h3 {
-    font-size: var(--size-base);
-    font-weight: var(--weight-bold);
-    color: var(--color-green-dark);
-    margin-bottom: 6px;
+    font-size: var(--size-lg);
+    margin-bottom: 8px;
   }
   .pillar p {
     font-size: var(--size-sm);
     color: var(--color-text-muted);
-    line-height: var(--leading-body);
     max-width: none;
   }
 
-  /* ---- Contact form embed ---- */
-  .contact-form {
-    display: block;
-    max-width: 720px;
-    min-height: 420px;
-    border-radius: var(--radius-md);
+  /* ---- Events / updates ---- */
+  .events-list { display: flex; flex-direction: column; gap: 12px; }
+  .updates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: var(--space-2);
+    align-items: start;
   }
 
-  /* ---- Event / Update lists ---- */
-  .events-list  { display: flex; flex-direction: column; gap: 12px; }
-  .updates-list { display: flex; flex-direction: column; gap: 14px; }
-
-  /* ---- Testimonials — mobile first (1 → 2 → 3 columns) ---- */
+  /* ---- Testimonials (on dark band) ---- */
+  #recognition h2 { color: var(--color-white); }
+  #recognition .section-label { color: var(--color-sun); }
+  #recognition .section-intro { color: rgba(255,255,255,0.72); }
   .testimonials {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-2);
   }
   .testimonial {
-    background: var(--color-bg-alt);
-    border: 0.5px solid var(--color-border);
+    position: relative;
+    margin: 0;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: var(--radius-md);
-    padding: 1.4rem;
+    padding: var(--space-4) var(--space-3) var(--space-3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .testimonial::before {
+    content: '\201C';
+    position: absolute;
+    top: 4px;
+    left: 18px;
+    font-family: var(--font-heading);
+    font-size: 4.5rem;
+    line-height: 1;
+    color: var(--color-sun);
+    opacity: 0.85;
   }
   .testimonial blockquote {
+    font-family: var(--font-heading);
+    font-size: var(--size-lg);
+    font-weight: 400;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.94);
+    padding-top: 18px;
+  }
+  .testimonial--feature blockquote { font-size: clamp(1.1rem, 2vw, 1.3rem); }
+  .testimonial figcaption {
+    display: flex;
+    flex-direction: column;
     font-size: var(--size-sm);
-    line-height: var(--leading-body);
-    color: var(--color-text);
-    font-style: italic;
-    margin-bottom: 12px;
+    padding-top: var(--space-2);
+    border-top: 1px solid rgba(255,255,255,0.12);
   }
-  .testimonial cite {
-    font-size: var(--size-xs);
-    color: var(--color-text-muted);
-    font-style: normal;
-    font-weight: var(--weight-bold);
-  }
+  .testimonial figcaption strong { color: var(--color-white); }
+  .testimonial figcaption span { color: var(--color-green-light); }
 
-  /* ---- Find us — mobile first (1 → 2 columns) ---- */
+  /* ---- Find us ---- */
   .find-us-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-4);
     align-items: start;
   }
-  /* iframe inline style replaced with class */
   .map-iframe {
     border: 0;
     border-radius: var(--radius-md);
     display: block;
     width: 100%;
+    height: 340px;
+    box-shadow: var(--shadow-md);
   }
   .map-address {
     font-size: var(--size-sm);
     color: var(--color-text-muted);
-    margin-top: 10px;
+    margin-top: 12px;
   }
-  .contact-details { display: flex; flex-direction: column; gap: 1.25rem; }
-  .contact-row { display: flex; gap: 14px; align-items: flex-start; }
+  .contact-details { display: flex; flex-direction: column; gap: var(--space-3); }
+  .contact-row { display: flex; gap: 16px; align-items: flex-start; }
   .contact-icon {
-    width: 34px;
-    height: 34px;
+    width: 42px;
+    height: 42px;
     background: var(--color-green-pale);
-    color: var(--color-green-dark);
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: var(--color-green-mid);
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
     flex-shrink: 0;
   }
   .contact-row h3 {
-    font-size: var(--size-sm);
-    font-weight: var(--weight-bold);
-    color: var(--color-green-dark);
-    margin-bottom: 2px;
+    font-size: var(--size-base);
+    margin-bottom: 4px;
   }
   .contact-row p,
   .contact-row a {
-    font-size: var(--size-sm);
+    font-size: var(--size-base);
     color: var(--color-text-muted);
-    text-decoration: none;
     max-width: none;
   }
-  .contact-row a:hover { text-decoration: underline; }
+  .contact-row a { color: var(--color-green-mid); font-weight: var(--weight-medium); overflow-wrap: anywhere; }
 
-  /* ---- Responsive breakpoints (min-width, mobile first) ---- */
+  /* ---- Contact form ---- */
+  .contact-card {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: clamp(1.5rem, 5vw, 3rem);
+  }
+  .contact-card .section-head { margin-bottom: var(--space-2); }
+  .contact-form {
+    display: block;
+    min-height: 420px;
+  }
+
+  /* ---- Responsive (mobile first) ---- */
   @media (min-width: 640px) {
-    .hero h1 { font-size: var(--size-3xl); }
-    .hero-stats { gap: 2.5rem; }
     .pillars { grid-template-columns: repeat(2, 1fr); }
-    .testimonials { grid-template-columns: repeat(2, 1fr); }
-    .find-us-grid { grid-template-columns: 1fr 1fr; }
+    .find-us-grid { grid-template-columns: 1.2fr 1fr; }
+  }
+
+  @media (min-width: 860px) {
+    .about-grid.has-photo { grid-template-columns: 1.35fr 1fr; gap: var(--space-8); }
+    .founders { max-width: 400px; justify-self: end; margin: 0; }
+    .testimonials {
+      grid-template-columns: 1.4fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    .testimonial--feature { grid-row: span 2; }
   }
 
   @media (min-width: 1024px) {
-    .hero h1 { font-size: var(--size-4xl); }
-    .pillars { grid-template-columns: repeat(3, 1fr); }
-    .testimonials { grid-template-columns: repeat(3, 1fr); }
+    .pillars { grid-template-columns: repeat(4, 1fr); }
   }
 </style>

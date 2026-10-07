@@ -16,8 +16,9 @@ const {
   <meta charset="UTF-8" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1F3A2B" />
   <meta name="description" content={description} />
   <title>{title}</title>
   <link rel="icon" type="image/svg+xml" href="/logos/hmw-icon-colour.svg" />
@@ -65,7 +66,7 @@ const {
     // Scroll-reveal (skipped for reduced-motion users)
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduce && 'IntersectionObserver' in window) {
-      const els = document.querySelectorAll('.pillar, .testimonial, .event-card, .update-card, .gallery-item, .contact-row');
+      const els = document.querySelectorAll('.pillar, .testimonial, .event-card, .update-card, .carousel, .founders, .contact-row');
       const io = new IntersectionObserver((entries) => {
         for (const e of entries) {
           if (e.isIntersecting) {

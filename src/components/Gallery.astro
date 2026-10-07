@@ -1,102 +1,149 @@
 ---
+/*
+ * Photo carousel.
+ *
+ * Photos come from public/images/gallery/. Order, captions and alt text come
+ * from src/data/gallery.json — any photo in the folder that isn't listed there
+ * still appears (at the end, without a caption), so dropping in a new photo
+ * never breaks anything.
+ */
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import Icon from './Icon.astro';
+import captions from '../data/gallery.json';
 
-let images = [];
+type Entry = { file: string; caption?: string; alt?: string };
+
+let files: string[] = [];
 try {
-  const files = await readdir(join(process.cwd(), 'public/images/gallery'));
-  images = files
+  files = (await readdir(join(process.cwd(), 'public/images/gallery')))
     .filter(f => /\.(jpe?g|png|webp|avif)$/i.test(f))
-    .map(f => `/images/gallery/${f}`);
+    .sort();
 } catch {
-  images = [];
+  files = [];
 }
 
-/*
- * Placeholder colours are defined as CSS classes (ph-1 … ph-6) in the <style>
- * block below, referencing CSS custom properties — no inline styles.
- */
-const placeholders = [
-  { label: 'Summer BBQ',             cls: 'ph-1' },
-  { label: 'Planting day',           cls: 'ph-2' },
-  { label: 'Harvest time',           cls: 'ph-3' },
-  { label: 'Coronation celebration', cls: 'ph-4' },
-  { label: 'Coffee morning',         cls: 'ph-5' },
-  { label: 'Volunteer day',          cls: 'ph-6' },
-];
-const showPlaceholders = images.length === 0;
+const listed = (captions as Entry[]).filter(c => files.includes(c.file));
+const unlisted = files.filter(f => !listed.some(c => c.file === f)).map(file => ({ file }) as Entry);
+const slides = [...listed, ...unlisted].map((s, i) => ({
+  src: `/images/gallery/${s.file}`,
+  caption: s.caption ?? '',
+  alt: s.alt ?? s.caption ?? `Health Means Wealth allotment — photo ${i + 1}`,
+}));
+const total = slides.length;
 ---
 
-<div class="gallery-grid">
-  {showPlaceholders
-    ? placeholders.map((p, i) => (
-        <div
-          class={`gallery-item img-wrap ${p.cls}${i === 0 ? ' large' : ''}`}
-          aria-label={`Placeholder: ${p.label}`}>
-          <Icon name="leaf" size={64} class="gallery-leaf" />
-          <span class="gallery-label">{p.label}</span>
-        </div>
-      ))
-    : images.map((src, i) => (
-        <button
-          type="button"
-          class={`gallery-item img-wrap gallery-btn${i === 0 ? ' large' : ''}`}
-          data-full={src}
-          aria-label={`View photo ${i + 1} full size`}>
-          <img
-            src={src}
-            alt={`Health Means Wealth — photo ${i + 1}`}
-            loading="lazy"
-            decoding="async"
-          />
-        </button>
-      ))
-  }
-</div>
+{total === 0 ? (
+  <p class="gallery-empty">Photos coming soon.</p>
+) : (
+  <div class="carousel" id="carousel" role="region" aria-roledescription="carousel" aria-label="Photos from the allotment">
+    <div class="stage">
+      {slides.map((s, i) => (
+        <figure
+          class={`slide${i === 0 ? ' is-active' : ''}`}
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${i + 1} of ${total}`}
+          aria-hidden={i === 0 ? 'false' : 'true'}
+          data-caption={s.caption}>
+          {/* Blurred copy fills the frame so portrait and landscape photos both sit nicely */}
+          <img class="slide-backdrop" src={s.src} alt="" aria-hidden="true" loading={i < 2 ? 'eager' : 'lazy'} decoding="async" />
+          <button type="button" class="slide-open" data-full={s.src} data-caption={s.caption} tabindex={i === 0 ? 0 : -1} aria-label={`View full size: ${s.alt}`}>
+            <img class="slide-img" src={s.src} alt={s.alt} loading={i < 2 ? 'eager' : 'lazy'} decoding="async" />
+          </button>
+        </figure>
+      ))}
 
-{!showPlaceholders && (
-  <dialog class="lightbox" id="lightbox">
+      {total > 1 && (
+        <>
+          <button type="button" class="nav-btn prev" aria-label="Previous photo">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="nav-btn next" aria-label="Next photo">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="progress" aria-hidden="true"><span></span></div>
+        </>
+      )}
+    </div>
+
+    <div class="caption-bar">
+      <p class="caption" aria-live="polite">{slides[0].caption}</p>
+      <div class="caption-meta">
+        <span class="counter"><span class="counter-current">1</span> / {total}</span>
+        {total > 1 && (
+          <button type="button" class="play-btn" aria-label="Pause slideshow" data-playing="true">
+            <svg class="i-pause" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>
+            <svg class="i-play" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5v14l12-7z" fill="currentColor"/></svg>
+          </button>
+        )}
+      </div>
+    </div>
+
+    {total > 1 && (
+      <div class="thumbs" role="group" aria-label="Choose a photo">
+        {slides.map((s, i) => (
+          <button type="button" class={`thumb${i === 0 ? ' is-active' : ''}`} data-index={i} aria-label={`Show photo ${i + 1}${s.caption ? `: ${s.caption}` : ''}`} aria-current={i === 0 ? 'true' : 'false'}>
+            <img src={s.src} alt="" loading="lazy" decoding="async" />
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+)}
+
+{total > 0 && (
+  <dialog class="lightbox" id="lightbox" aria-label="Photo, full size">
     <button type="button" class="lightbox-close" aria-label="Close photo">&times;</button>
-    <img src="" alt="Health Means Wealth photo, full size" />
+    <figure>
+      <img src="" alt="" />
+      <figcaption></figcaption>
+    </figure>
   </dialog>
 )}
 
 <style>
-  /* TASK 7 — mobile-first: 2 cols → 3 → 4 */
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-2);
+  .carousel {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
   }
 
-  @media (min-width: 640px) {
-    .gallery-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .gallery-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  /* TASK 5 — .img-wrap applied via global.css; local overrides for gallery */
-  .gallery-item {
-    aspect-ratio: 4 / 3;
+  /* ---- Stage ---- */
+  .stage {
     position: relative;
-    /* border-radius and overflow come from .img-wrap in global.css */
+    aspect-ratio: 4 / 3;
+    background: var(--color-green-dark);
+    overflow: hidden;
+    touch-action: pan-y;
   }
-  .gallery-item.large {
-    grid-column: span 2;
-    grid-row: span 2;
-    aspect-ratio: auto;
-    min-height: 280px;
+  @media (min-width: 768px) {
+    .stage { aspect-ratio: 16 / 9; }
   }
 
-  /* Real images shown as buttons (lightbox trigger) */
-  .gallery-btn {
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 700ms ease, visibility 0s linear 700ms;
+  }
+  .slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 700ms ease, visibility 0s;
+  }
+  .slide-backdrop {
+    position: absolute;
+    inset: -40px;
+    width: calc(100% + 80px);
+    height: calc(100% + 80px);
+    object-fit: cover;
+    filter: blur(28px) saturate(1.1) brightness(0.7);
+  }
+  .slide-open {
+    position: absolute;
+    inset: 0;
     border: none;
     padding: 0;
     background: none;
@@ -104,86 +151,316 @@ const showPlaceholders = images.length === 0;
     display: block;
     width: 100%;
   }
-
-  /* Gallery label */
-  .gallery-label {
-    position: absolute;
-    bottom: 10px;
-    left: 12px;
-    color: rgba(255,255,255,0.88);
-    font-size: var(--size-xs);
-    font-weight: var(--weight-bold);
-    letter-spacing: 0.02em;
+  .slide-img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  /* Gentle Ken Burns drift on the active photo */
+  .slide.is-active .slide-img { animation: drift 9s ease-out both; }
+  @keyframes drift {
+    from { transform: scale(1.04); }
+    to   { transform: scale(1); }
   }
 
-  /* Decorative leaf watermark on placeholders */
-  :global(.gallery-leaf) {
+  /* ---- Prev / next ---- */
+  .nav-btn {
     position: absolute;
-    right: -10px;
-    top: -8px;
-    color: rgba(255,255,255,0.14);
-    transform: rotate(-18deg);
-    pointer-events: none;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.88);
+    color: var(--color-green-dark);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+  .nav-btn:hover { background: var(--color-white); transform: translateY(-50%) scale(1.06); }
+  .prev { left: 14px; }
+  .next { right: 14px; }
+  @media (max-width: 520px) {
+    .nav-btn { width: 40px; height: 40px; }
+    .prev { left: 8px; }
+    .next { right: 8px; }
   }
 
-  /* Placeholder gradients — soft, organic depth instead of flat blocks */
-  .ph-1 { background: linear-gradient(140deg, var(--color-green-dark), var(--color-placeholder-2)); }
-  .ph-2 { background: linear-gradient(140deg, var(--color-placeholder-2), var(--color-placeholder-3)); }
-  .ph-3 { background: linear-gradient(140deg, var(--color-placeholder-3), var(--color-placeholder-4)); }
-  .ph-4 { background: linear-gradient(140deg, var(--color-placeholder-4), var(--color-green-mid)); }
-  .ph-5 { background: linear-gradient(140deg, var(--color-green-mid), var(--color-green-light)); }
-  .ph-6 { background: linear-gradient(140deg, var(--color-green-light), var(--color-green-mid)); }
+  /* ---- Autoplay progress line ---- */
+  .progress {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 3px;
+    background: rgba(255,255,255,0.15);
+    z-index: 2;
+  }
+  .progress span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--color-sun);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .progress span.run { animation: progress var(--interval, 6000ms) linear forwards; }
+  .carousel.is-paused .progress span { animation-play-state: paused; }
+  @keyframes progress { to { transform: scaleX(1); } }
 
-  /* Lightbox */
+  /* ---- Caption bar ---- */
+  .caption-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .caption {
+    font-family: var(--font-heading);
+    font-size: clamp(1rem, 2.4vw, 1.2rem);
+    font-weight: 600;
+    color: var(--color-green-dark);
+    line-height: 1.35;
+    min-height: 1.35em;
+    max-width: none;
+  }
+  .caption-meta { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .counter {
+    font-size: var(--size-sm);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .play-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-green-dark);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+  }
+  .play-btn:hover { background: var(--color-green-pale); border-color: var(--color-green-mid); }
+  .play-btn .i-play { display: none; }
+  .play-btn[data-playing="false"] .i-play { display: block; }
+  .play-btn[data-playing="false"] .i-pause { display: none; }
+
+  /* ---- Thumbnails ---- */
+  .thumbs {
+    position: relative; /* offsetParent for thumb scroll maths */
+    display: flex;
+    gap: 10px;
+    padding: 14px 20px 18px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+  .thumb {
+    flex: 0 0 auto;
+    width: 84px;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0.55;
+    outline: 2.5px solid transparent;
+    outline-offset: 2px;
+    scroll-snap-align: center;
+    transition: opacity var(--transition-fast), outline-color var(--transition-fast);
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb:hover { opacity: 0.85; }
+  .thumb.is-active { opacity: 1; outline-color: var(--color-accent); }
+
+  .gallery-empty { color: var(--color-text-muted); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide.is-active { transition: none; }
+    .slide.is-active .slide-img { animation: none; }
+  }
+
+  /* ---- Lightbox ---- */
   .lightbox {
     border: none;
     padding: 0;
     background: transparent;
-    max-width: min(92vw, 1100px);
-    max-height: 90vh;
+    max-width: min(94vw, 1200px);
+    max-height: 94vh;
+    margin: auto;
+    overflow: visible;
   }
-  .lightbox::backdrop {
-    background: rgba(20, 30, 12, 0.82);
-  }
+  .lightbox::backdrop { background: rgba(15, 28, 20, 0.88); }
+  .lightbox figure { margin: 0; }
   .lightbox img {
-    max-width: min(92vw, 1100px);
-    max-height: 85vh;
+    max-width: min(94vw, 1200px);
+    max-height: 84vh;
     width: auto;
     height: auto;
     border-radius: var(--radius-md);
     display: block;
     margin: 0 auto;
   }
+  .lightbox figcaption {
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    margin-top: 12px;
+    font-size: var(--size-base);
+  }
   .lightbox-close {
     position: absolute;
-    top: -4px;
-    right: 4px;
+    top: 8px;
+    right: 8px;
     z-index: 1;
-    background: rgba(0,0,0,0.55);
-    color: #fff;
+    background: rgba(0,0,0,0.6);
+    color: var(--color-white);
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    font-size: 22px;
+    font-size: 26px;
     line-height: 1;
     cursor: pointer;
   }
 </style>
 
 <script>
-  const lightbox = document.getElementById('lightbox') as HTMLDialogElement | null;
-  if (lightbox) {
-    const img = lightbox.querySelector('img');
-    document.querySelectorAll<HTMLButtonElement>('.gallery-btn').forEach(btn => {
+  const root = document.getElementById('carousel');
+  const INTERVAL = 6000;
+
+  if (root) {
+    const slides = [...root.querySelectorAll<HTMLElement>('.slide')];
+    const thumbs = [...root.querySelectorAll<HTMLButtonElement>('.thumb')];
+    const caption = root.querySelector<HTMLElement>('.caption');
+    const counter = root.querySelector<HTMLElement>('.counter-current');
+    const bar = root.querySelector<HTMLElement>('.progress span');
+    const playBtn = root.querySelector<HTMLButtonElement>('.play-btn');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let index = 0;
+    let timer: number | undefined;
+    // userPaused = pressed the pause button; hoverPaused/offscreen are temporary
+    let userPaused = reduceMotion;
+    let hoverPaused = false;
+    let offscreen = true;
+
+    root.style.setProperty('--interval', `${INTERVAL}ms`);
+
+    const show = (i: number) => {
+      index = (i + slides.length) % slides.length;
+      slides.forEach((s, n) => {
+        const active = n === index;
+        s.classList.toggle('is-active', active);
+        s.setAttribute('aria-hidden', active ? 'false' : 'true');
+        s.querySelector('.slide-open')?.setAttribute('tabindex', active ? '0' : '-1');
+      });
+      thumbs.forEach((t, n) => {
+        t.classList.toggle('is-active', n === index);
+        t.setAttribute('aria-current', n === index ? 'true' : 'false');
+      });
+      // Scroll only the thumbnail strip (scrollIntoView could move the whole page)
+      const strip = thumbs[index]?.parentElement;
+      if (strip) {
+        const t = thumbs[index];
+        strip.scrollTo({
+          left: t.offsetLeft - strip.clientWidth / 2 + t.clientWidth / 2,
+          behavior: reduceMotion ? 'auto' : 'smooth',
+        });
+      }
+      if (caption) caption.textContent = slides[index].dataset.caption ?? '';
+      if (counter) counter.textContent = String(index + 1);
+      restart();
+    };
+
+    const running = () => !userPaused && !hoverPaused && !offscreen && !document.hidden;
+
+    const restart = () => {
+      window.clearTimeout(timer);
+      if (bar) {
+        bar.classList.remove('run');
+        void bar.offsetWidth; // reflow so the animation restarts
+      }
+      if (running()) {
+        bar?.classList.add('run');
+        timer = window.setTimeout(() => show(index + 1), INTERVAL);
+      }
+      root.classList.toggle('is-paused', !running());
+    };
+
+    const setUserPaused = (p: boolean) => {
+      userPaused = p;
+      if (playBtn) {
+        playBtn.dataset.playing = p ? 'false' : 'true';
+        playBtn.setAttribute('aria-label', p ? 'Play slideshow' : 'Pause slideshow');
+      }
+      // Announce caption changes only when the user is driving the carousel
+      caption?.setAttribute('aria-live', p ? 'polite' : 'off');
+      restart();
+    };
+    setUserPaused(userPaused);
+
+    root.querySelector('.prev')?.addEventListener('click', () => show(index - 1));
+    root.querySelector('.next')?.addEventListener('click', () => show(index + 1));
+    thumbs.forEach(t => t.addEventListener('click', () => show(Number(t.dataset.index))));
+    playBtn?.addEventListener('click', () => setUserPaused(!userPaused));
+
+    // Pause while the pointer or keyboard focus is inside
+    root.addEventListener('mouseenter', () => { hoverPaused = true; restart(); });
+    root.addEventListener('mouseleave', () => { hoverPaused = false; restart(); });
+    root.addEventListener('focusin', () => { hoverPaused = true; restart(); });
+    root.addEventListener('focusout', (e) => {
+      if (!root.contains(e.relatedTarget as Node)) { hoverPaused = false; restart(); }
+    });
+
+    // Only rotate while visible on screen and the tab is active
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => { offscreen = !e.isIntersecting; restart(); }, { threshold: 0.35 }).observe(root);
+    } else {
+      offscreen = false;
+    }
+    document.addEventListener('visibilitychange', restart);
+
+    // Arrow keys when focus is in the carousel
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); show(index - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(index + 1); }
+    });
+
+    // Swipe on touch screens
+    const stage = root.querySelector<HTMLElement>('.stage');
+    let startX = 0, startY = 0, swiped = false;
+    stage?.addEventListener('pointerdown', (e) => { startX = e.clientX; startY = e.clientY; swiped = false; });
+    stage?.addEventListener('pointerup', (e) => {
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+        swiped = true;
+        show(index + (dx < 0 ? 1 : -1));
+      }
+    });
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox') as HTMLDialogElement | null;
+    const lbImg = lightbox?.querySelector('img');
+    const lbCap = lightbox?.querySelector('figcaption');
+    root.querySelectorAll<HTMLButtonElement>('.slide-open').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (img && btn.dataset.full) img.src = btn.dataset.full;
+        if (swiped || !lightbox) return;
+        const img = btn.querySelector('img');
+        if (lbImg) { lbImg.src = btn.dataset.full ?? ''; lbImg.alt = img?.alt ?? ''; }
+        if (lbCap) lbCap.textContent = btn.dataset.caption ?? '';
         lightbox.showModal();
       });
     });
-    lightbox.querySelector('.lightbox-close')?.addEventListener('click', () => lightbox.close());
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) lightbox.close();
-    });
+    lightbox?.querySelector('.lightbox-close')?.addEventListener('click', () => lightbox.close());
+    lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.close(); });
   }
 </script>
