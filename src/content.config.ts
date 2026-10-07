@@ -7,6 +7,9 @@ const updates = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     tag: z.enum(['Event recap', 'News', 'Growing season', 'Community']),
+    // Optional photo, e.g. /images/gallery/my-photo.jpg
+    image: z.string().optional(),
+    image_alt: z.string().optional(),
   }),
 });
 

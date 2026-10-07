@@ -8,6 +8,8 @@
    - title: the headline
    - date: today's date in format 2025-08-10
    - tag: one of: Event recap, News, Growing season, Community
+   - image (optional): a photo path, e.g. /images/gallery/my-photo.jpg
+   - image_alt (optional): a short description of the photo for screen readers
 4. Write the update text below the second ---
 5. Save the file and run: git add . then git commit -m "New update" then git push
 
