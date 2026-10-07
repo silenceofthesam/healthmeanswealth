@@ -1,6 +1,6 @@
 ---
 title: A Level 4 “Thriving” award from the RHS
-date: 2026-09-30
+date: 2026-09-22
 tag: News
 image: /images/gallery/BritainInBloom.jpg
 image_alt: Health Means Wealth receiving an RHS It's Your Neighbourhood certificate on stage
